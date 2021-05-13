@@ -1,0 +1,55 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+}
+
+.photo-in-film-free {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  margin-right: 3px;
+}
+
+.photo-in-film-used {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: black;
+  margin-right: 3px;
+}
+
+.film-state {
+  padding: 10px;
+  display: inline-block;
+}
+
+.snap-button {
+  float: right;
+  width: 12rem;
+  height: 5rem;
+}
+
+#container {
+  background: whitesmoke;
+  height: 100vh;
+  width: 100vw;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+
+.return-button, .gallery-button {
+  padding: 1rem
+}
+
+.gallery-photo {
+  width: 30%;
+  padding-left: 3%;
+}
