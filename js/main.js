@@ -1,18 +1,19 @@
 import { PhotoCamera } from './camera.js';
 import { timeStamp } from './utils.js'
+import { persistent_value } from './persistence.js'
 
 const PICTURES_IN_FILM = 8;
 const DEVELOPMENT_TIME = 3000;
 const DB_NAME = 'photodata';
 
 
-Db(DB_NAME, { currentFilm: [], oldFilms: [], developedPhotos: [] }, (data, persist) => {
+persistent_value(DB_NAME, { currentFilm: [], oldFilms: [], developedPhotos: [] }, (data, persist) => {
     const camera = PhotoCamera();
     const filmIndicator = FilmStateIndicator(PICTURES_IN_FILM);
     const labIndicator = PhotoLabIndicator(labDoneButtonCb);
     const gallery = Gallery();
 
-    const camerona_container = document.getElementById("camera-mode");
+    const camera_container = document.getElementById("camera-mode");
     const root_container = document.getElementById("container");
 
     const triggerButton = document.createElement("button");
@@ -25,10 +26,10 @@ Db(DB_NAME, { currentFilm: [], oldFilms: [], developedPhotos: [] }, (data, persi
     updateIndicators();
     gallery.hide();
 
-    camerona_container.appendChild(filmIndicator.getElement())
-    camerona_container.appendChild(triggerButton);
-    camerona_container.appendChild(labIndicator.getElement())
-    camerona_container.appendChild(galleryButton);
+    camera_container.appendChild(filmIndicator.getElement())
+    camera_container.appendChild(triggerButton);
+    camera_container.appendChild(labIndicator.getElement())
+    camera_container.appendChild(galleryButton);
 
     root_container.appendChild(gallery.getElement());
 
@@ -38,13 +39,13 @@ Db(DB_NAME, { currentFilm: [], oldFilms: [], developedPhotos: [] }, (data, persi
 
     gallery.getBackButton().addEventListener('click', () => {
         gallery.hide();
-        camerona_container.style.display = 'block';
+        camera_container.style.display = 'block';
     });
 
     function showGalleryWith(images) {
         gallery.setImages(images);
         gallery.show();
-        camerona_container.style.display = 'none';
+        camera_container.style.display = 'none';
     }
 
     triggerButton.addEventListener('click', () => {
@@ -71,7 +72,7 @@ Db(DB_NAME, { currentFilm: [], oldFilms: [], developedPhotos: [] }, (data, persi
         if (delta > 2000) {
             if (confirm("reset?")) {
                 indexedDB.deleteDatabase(DB_NAME)
-                window.location.reload(false)
+                window.location.reload()
             }
             event.stopPropagation()
             event.preventDefault();
@@ -243,43 +244,3 @@ function FilmStateIndicator(size) {
 
 
 
-function Db(db_name, initial_value, cb) {
-    const DATA_KEY = 1;
-    const DATA_STORE_NAME = "dataObjectStore"
-    const db_request = window.indexedDB.open(db_name, 7);
-
-    db_request.onerror = event => console.error("DB init failed", event);
-    db_request.onupgradeneeded = event => {
-        const idb = event.target.result;
-        const objectStore = idb.createObjectStore(DATA_STORE_NAME);
-        objectStore.add(initial_value, DATA_KEY);
-        console.log("created the db")
-    }
-
-    db_request.onsuccess = function (event) {
-        const idb = event.target.result;
-        idb.onerror = event => console.error("Database error: ", event.target.errorCode);
-
-        function getObjectStore() {
-            const transaction = idb.transaction([DATA_STORE_NAME], "readwrite");
-            return transaction.objectStore(DATA_STORE_NAME);
-        }
-
-
-        function load(cb) {
-            const request = getObjectStore().get(DATA_KEY);
-            request.onsuccess = cb;
-        }
-
-        load(event => {
-            let data = event.target.result;
-            console.log(data)
-
-            function persist() {
-                getObjectStore().put(data, DATA_KEY)
-            }
-
-            cb(data, persist)
-        })
-    }
-}
