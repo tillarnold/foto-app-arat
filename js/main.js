@@ -1,6 +1,6 @@
 import { initdb, db } from './persistence.js'
 import { h, text, app } from "./vendor/hyperapp-2.0.18.js"
-import { EnterMainGallery, TakePhoto } from './actions.js'
+import { EnterMainGallery, TakePhoto, ResetDb } from './actions.js'
 import { film_indicator, film_lab, gallery } from './components.js'
 
 
@@ -18,11 +18,13 @@ initdb(() => {
                     console.log("State before render is", state)
                     return h("main", {}, [
                         state.galleryImages.length === 0 && h("div", {}, [
-                            h("h1", {}, text("To do list")),
+                            h("h1", {}, text("Foto")),
                             h("button", { onclick: TakePhoto }, text("Snap")),
                             h("button", { onclick: EnterMainGallery }, text("Gallery")),
                             film_indicator(state),
                             film_lab(state),
+                            h("br", {}),
+                            h("button", { onclick: ResetDb }, text("RESET")),
                         ]),
                         state.galleryImages.length > 0 && gallery(state),
                     ])
