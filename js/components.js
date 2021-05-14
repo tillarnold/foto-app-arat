@@ -3,6 +3,7 @@ import {
   DevelopedFilmWasCollected,
   ExitGallery,
   DownloadPhoto,
+  ExitShop,
 } from "./actions.js";
 
 export const film_indicator = ({ activeFilm }) =>
@@ -48,6 +49,12 @@ export const galleryImagesList = ({ galleryImages }) =>
 export const gallery = ({ galleryImages }) =>
   h("div", { class: "gallery" }, [
     h("p", {}, text("Gallery")),
-    h("button", { onclick: ExitGallery }, text("back")),
+    h("button", { class: "p-button", onclick: ExitGallery }, text("back")),
     galleryImagesList({ galleryImages }),
+  ]);
+
+export const shop = () =>
+  h("div", { class: "shop" }, [
+    h("h1", {}, text("Shop")),
+    h("button", { onclick: ExitShop, class: "p-button" }, text("Back")),
   ]);

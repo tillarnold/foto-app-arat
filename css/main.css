@@ -9,7 +9,7 @@
 body {
   height: 100vh;
   width: 100vw;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 .photo-in-film-free {
@@ -55,15 +55,9 @@ body {
   overflow-y: hidden;
 }
 
-.return-button,
-.gallery-button {
-  padding: 1rem;
-}
-
-.gallery {
-  height: 100vh;
-  background: gray;
-  overflow-y: auto;
+.p-button {
+  padding: 0.5rem;
+  margin: 0.3rem;
 }
 
 .gallery-photo {
@@ -71,17 +65,21 @@ body {
   padding-left: 3%;
 }
 
-.camera, .shop, .gallery {
+.camera,
+.shop,
+.gallery {
   width: 100vw;
   height: 100vh;
+}
 
+.gallery {
+  background: gray;
+  overflow-y: auto;
 }
 
 .camera-top-panel {
   height: 30vh;
   background: silver;
-  margin-top: 0;
-  transition: margin-top 1s linear;
   display: flex;
 }
 
@@ -100,5 +98,5 @@ body {
 .camera-and-shop {
   width: 200vw;
   display: flex;
-  transition: margin 1s linear;
+  transition: margin 0.5s ease-in-out;
 }
