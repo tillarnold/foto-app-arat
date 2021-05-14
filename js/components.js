@@ -8,7 +8,17 @@ import {
   TakePhoto,
   ResetDb,
   EnterShop,
+  DisableZeroDevelopmentTime,
+  EnableZeroDevelopmentTime,
 } from "./actions.js";
+
+const SECONDS = 1000;
+const MINUTES = 60 * SECONDS;
+const HOURS = 60 * MINUTES;
+
+const DEVELOPMENT_TIME = 0.5 * HOURS;
+
+import { timeFormat } from "./utils.js";
 
 export const film_indicator = ({ activeFilm }) =>
   h("div", { class: "film-state" }, [
@@ -21,21 +31,52 @@ export const film_indicator = ({ activeFilm }) =>
     ),
   ]);
 
-export const film_lab = ({ filmsInDevelopment }) =>
+export const film_lab = ({
+  filmsInDevelopment,
+  zeroDevelopmentTime,
+  currentTime,
+}) =>
   h("div", {}, [
     text(`There are currently ${filmsInDevelopment.length} films in the lab`),
-    h("ul", {}, filmsInDevelopment.map(film_lab_item)),
+    h(
+      "ul",
+      { style: { paddingLeft: "1rem", lineHeight: "2.5" } },
+      filmsInDevelopment.map((film) =>
+        film_lab_item(film, zeroDevelopmentTime, currentTime)
+      )
+    ),
   ]);
 
-export const film_lab_item = (film) =>
-  h("li", {}, [
-    text(
+export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
+  const timeInDevelopment = currentTime - film.developmentStartDate;
+  const timeLeft = DEVELOPMENT_TIME - timeInDevelopment;
+  let isDone = timeLeft <= 0;
+
+  if (zeroDevelopmentTime) {
+    isDone = true;
+  }
+
+  console.log(
+    `The film started at ${new Date(
+      film.developmentStartDate
+    ).toLocaleTimeString()} is now done: ${isDone} and zeroDevelopmentTime is ${zeroDevelopmentTime}`
+  );
+  return h("li", {}, [
+    /*text(
       `The film was sent for development at ${new Date(
         film.developmentStartDate
       ).toLocaleString()}`
-    ),
-    h("button", { onclick: [DevelopedFilmWasCollected, film.id] }, text("Get")),
+    ),*/
+    isDone
+      ? h(
+          "button",
+          { onclick: [DevelopedFilmWasCollected, film.id] },
+          text("Ready for pickup!")
+        )
+      : text(`The film will be ready in ${timeFormat(timeLeft)}`),
+    ,
   ]);
+};
 
 export const galleryImagesList = ({ galleryImages }) =>
   h(
@@ -57,10 +98,21 @@ export const gallery = ({ galleryImages }) =>
     galleryImagesList({ galleryImages }),
   ]);
 
-export const shop = () =>
+export const shop = (state) =>
   h("div", { class: "shop" }, [
     h("h1", {}, text("Shop")),
     h("button", { onclick: ExitShop, class: "p-button" }, text("Back")),
+    state.zeroDevelopmentTime
+      ? h(
+          "button",
+          { onclick: DisableZeroDevelopmentTime, class: "p-button" },
+          text("Disable Instant development!")
+        )
+      : h(
+          "button",
+          { onclick: EnableZeroDevelopmentTime, class: "p-button" },
+          text("Enable Instant development!")
+        ),
   ]);
 
 export const camera = (state) =>

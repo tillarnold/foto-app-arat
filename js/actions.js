@@ -5,7 +5,7 @@ import { download } from "./utils.js";
 const camera = PhotoCamera();
 
 export const TakePhoto = (state) => [
-  { ...state },
+  state,
   [
     (dispatch) => {
       const pic = camera.snap();
@@ -17,7 +17,7 @@ export const TakePhoto = (state) => [
 ];
 
 export const DownloadPhoto = (state, photo) => [
-  { ...state },
+  state,
   [
     (dispatch) => {
       download(photo);
@@ -34,9 +34,7 @@ export const FilmsInDevelopmentChanged = (state, filmsInDevelopment) => {
 };
 
 export const ResetDb = (state) => [
-  {
-    ...state,
-  },
+  state,
   [
     (dispatch) => {
       db.deleteDatabase();
@@ -50,6 +48,21 @@ ResetDb;
 export const NewFilmWasInserted = (state, newFilm) => ({
   ...state,
   activeFilm: newFilm,
+});
+
+export const UpdateTime = (state, currentTime) => ({
+  ...state,
+  currentTime,
+});
+
+export const DisableZeroDevelopmentTime = (state) => ({
+  ...state,
+  zeroDevelopmentTime: false,
+});
+
+export const EnableZeroDevelopmentTime = (state) => ({
+  ...state,
+  zeroDevelopmentTime: true,
 });
 
 export const NewPhotoTaken = (state, film) => [

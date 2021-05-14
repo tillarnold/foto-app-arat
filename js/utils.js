@@ -26,3 +26,24 @@ export function download(href, name = "img.png") {
   a.click();
   document.body.removeChild(a);
 }
+
+export function timeFormat(time) {
+  const timeInSeconds = time / 1000;
+  const timeInMinutes = timeInSeconds / 60;
+  const timeInHours = timeInMinutes / 60;
+  const timeInDays = timeInHours / 24;
+
+  if (timeInDays > 1) {
+    return Math.round(timeInDays) + " days";
+  }
+
+  if (timeInHours > 1) {
+    return Math.round(timeInHours) + " hours";
+  }
+
+  if (timeInMinutes > 1) {
+    return Math.round(timeInMinutes) + " minutes";
+  }
+
+  return "under a minute";
+}

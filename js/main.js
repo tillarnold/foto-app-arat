@@ -1,6 +1,16 @@
 import { initdb, db } from "./persistence.js";
 import { h, app } from "./vendor/hyperapp-2.0.18.js";
 import { gallery, shop, camera } from "./components.js";
+import { UpdateTime } from "./actions.js";
+
+const intervalSubscriber = (dispatch, { time, action }) => {
+  let handle = setInterval(() => {
+    dispatch(action);
+  }, time);
+  return () => clearInterval(handle);
+};
+
+const onInterval = (time, action) => [intervalSubscriber, { time, action }];
 
 initdb(() => {
   window.pdb = db; //TODO: remove
@@ -12,6 +22,8 @@ initdb(() => {
           filmsInDevelopment: initialFilmsInDevelopment,
           galleryImages: [],
           path: "camera",
+          currentTime: Date.now(),
+          zeroDevelopmentTime: false,
         },
         view: (state) => {
           console.log("State before render is", state);
@@ -31,6 +43,9 @@ initdb(() => {
           ]);
         },
         node: document.getElementById("container"),
+        subscriptions: (state) => [
+          state.path === "camera" && onInterval(10000, UpdateTime),
+        ],
       });
     }
   );
