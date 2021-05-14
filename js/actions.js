@@ -4,6 +4,30 @@ import { download, photoFileName } from "./utils.js";
 
 const camera = PhotoCamera();
 
+const videoElement = camera.getVideoElement();
+
+function adjustViewfinderPosition() {
+  const viewfinder = document.getElementById("viewfinder");
+  const videoWidth = parseInt(
+    window.getComputedStyle(document.querySelector("#viewfinder video")).width,
+    10
+  );
+  viewfinder.style.left =
+    (document.documentElement.clientWidth - videoWidth) / 2 + "px";
+}
+
+videoElement.addEventListener("canplay", (ev) => {
+  console.log("adding video player");
+  videoElement.style.width = "100px";
+  const viewfinder = document.getElementById("viewfinder");
+  viewfinder.appendChild(camera.getVideoElement());
+  adjustViewfinderPosition();
+});
+
+window.addEventListener("resize", function (event) {
+  adjustViewfinderPosition();
+});
+
 export const TakePhoto = (state) => [
   state,
   [

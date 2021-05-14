@@ -25,7 +25,12 @@ export function PhotoCamera() {
     return canvas.toDataURL("image/png");
   }
 
+  function getVideoElement() {
+    return player;
+  }
+
   return {
     snap,
+    getVideoElement,
   };
 }
