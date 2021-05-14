@@ -1,6 +1,9 @@
 import { PhotoCamera } from './camera.js';
-import { timeStamp } from './utils.js'
-import { persistent_value } from './persistence.js'
+import { timeStamp, repeat } from './utils.js'
+import { persistent_value, PhotoDB } from './persistence.js'
+import { h, text, app } from "./vendor/hyperapp-2.0.18.js"
+
+/*
 
 const PICTURES_IN_FILM = 8;
 const DEVELOPMENT_TIME = 3000;
@@ -111,7 +114,6 @@ persistent_value(DB_NAME, { currentFilm: [], oldFilms: [], developedPhotos: [] }
     function labDoneButtonCb(index) {
         const photos = data.oldFilms[index];
         finishedDevelopment([index]);
-        console.log("labDoneButtonCb", photos)
         showGalleryWith(photos.data)
     }
 
@@ -239,6 +241,78 @@ function FilmStateIndicator(size) {
     }
 
 }
+
+*/
+
+
+const camera = PhotoCamera();
+
+PhotoDB(db => {
+    window.pdb = db;
+
+    const AddTodo = (state) => ({
+        ...state,
+        value: "",
+        todos: state.todos.concat(state.value),
+        usedFrames: state.usedFrames + 1,
+    })
+
+    const NewValue = (state, event) => ({
+        ...state,
+        value: event.target.value,
+    })
+
+    const TakePhoto = (state) => [{ ...state }, [dispatch => {
+        const pic = camera.snap();
+        db.addPhotoToActiveFilm(pic).then(film => {
+            dispatch(NewPhotoTaken, film)
+        })
+    }]];
+
+    const NewPhotoTaken = (state, film) => ({
+        ...state,
+        usedFrames: film.photos.length
+    })
+
+    const film_indicator = ({ usedFrames, totalFrames }) => h("div", { class: "film-state" }, [
+        ...Array.from({ length: usedFrames }, () => h("div", { class: "photo-in-film-used" })),
+        ...Array.from({ length: totalFrames - usedFrames }, () => h("div", { class: "photo-in-film-free" })),
+    ]);
+
+    const film_lab = ({ filmsInDevelopment }) => h("div", {}, [
+        text(`There are currently ${filmsInDevelopment.length} films in the lab`),
+        h("ul", {},
+            filmsInDevelopment.map(film_lab_item)
+        )
+
+    ]);
+
+    const film_lab_item = film => h("li", {}, text(`The film was sent for development at ${film.date}`));
+
+    app({
+        init: {
+            todos: [],
+            value: "",
+            usedFrames: 4,
+            totalFrames: 12,
+            filmsInDevelopment: [{ date: Date.now() }],
+        },
+        view: (state) =>
+            h("main", {}, [
+                h("h1", {}, text("To do list")),
+                h("button", { onclick: TakePhoto }, text("Snap")),
+                film_indicator(state),
+                film_lab(state),
+                h("input", { type: "text", oninput: NewValue, value: state.value }),
+                h("ul", {},
+                    state.todos.map((todo) => h("li", {}, text(todo)))
+                ),
+                h("button", { onclick: AddTodo }, text("New!")),
+            ]),
+        node: document.getElementById("container"),
+    })
+
+})
 
 
 

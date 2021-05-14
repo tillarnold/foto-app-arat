@@ -1,4 +1,4 @@
-export function index(path, root) {
+export function indexIntoObject(path, root) {
     let obj = root;
     for (let el of path) {
         obj = obj[el]
@@ -6,13 +6,16 @@ export function index(path, root) {
     return obj;
 }
 
-
 export function timeStamp() {
     return Date.now()
 }
 
 export function jsonclone(obj) {
     return JSON.parse(JSON.stringify(obj))
+}
+
+export function repeat(count, value) {
+    return Array(count).fill(value);
 }
 
 export function download(href, name = "img.png") {

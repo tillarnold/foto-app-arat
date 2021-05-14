@@ -151,7 +151,7 @@ export function PhotoDB(cb) {
 
 
         /// Add the given photo to the film with the provided id
-        /// resolves to the new film of photos in the film
+        /// resolves to the new film 
         function addPhotoToFilm(filmId, photo) {
             return new Promise((resolve, _) => {
                 Promise.all([addPhoto(photo), loadFilm(filmId)]).then(([photoId, film]) => {
