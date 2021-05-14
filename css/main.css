@@ -72,9 +72,14 @@ body {
   height: 100vh;
 }
 
+.shop {
+  padding: 1rem;
+}
+
 .gallery {
   background: gray;
   overflow-y: auto;
+  padding: 1rem;
 }
 
 .camera-top-panel {
@@ -93,6 +98,7 @@ body {
   background-color: #282828;
   background-size: 16px 16px;
   color: whitesmoke;
+  padding: 1rem;
 }
 
 .camera-and-shop {
