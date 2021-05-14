@@ -56,11 +56,11 @@ export function PhotoDB(cb) {
     db_request.onupgradeneeded = event => {
         const idb = event.target.result;
         idb.createObjectStore(PHOTO_STORE, { autoIncrement: true });
-        const film_store = idb.createObjectStore(FILM_STORE, { autoIncrement: true });
-        const config_store = idb.createObjectStore(CONFIG_STORE, { autoIncrement: true });
+        const film_store = idb.createObjectStore(FILM_STORE, { autoIncrement: true, keyPath: "id" });
+        const config_store = idb.createObjectStore(CONFIG_STORE);
 
         // Initialize the active film with a new empty film
-        film_store.put({ photos: [] }).onsuccess = e => {
+        film_store.put({ photos: [], frames: 8 }).onsuccess = e => {
             config_store.put(e.target.result, ACTIVE_FILM_CONFIG_KEY);
         };
         config_store.put([], DEVELOPED_PHOTOS_CONFIG_KEY);
@@ -102,13 +102,20 @@ export function PhotoDB(cb) {
 
         function addFilm() {
             return new Promise((resolve, _) => {
-                getFilmStore().add({ photos: [] }).onsuccess = e => resolve(e.target.result);
+                getFilmStore().add({ photos: [], frames: 8 }).onsuccess = e => resolve(e.target.result);
             });
         }
 
         function loadFilm(id) {
             return new Promise((resolve, _) => {
                 getFilmStore().get(id).onsuccess = e => resolve(e.target.result);
+            });
+        }
+
+
+        function deleteFilm(id) {
+            return new Promise((resolve, _) => {
+                getFilmStore().delete(id).onsuccess = e => resolve(e.target.result);
             });
         }
 
@@ -124,30 +131,36 @@ export function PhotoDB(cb) {
             });
         }
 
-
-
-        function setActiveFilm(id) {
+        function setActiveFilmId(id) {
             return setConfig(ACTIVE_FILM_CONFIG_KEY, id);
         }
 
-        function loadActiveFilm() {
+        function loadActiveFilmId() {
             return loadConfig(ACTIVE_FILM_CONFIG_KEY);
         }
 
-        function loadDevelopedPhotos() {
+        function loadActiveFilm() {
+            return loadActiveFilmId().then(loadFilm);
+        }
+
+        function loadDevelopedPhotoIds() {
             return loadConfig(DEVELOPED_PHOTOS_CONFIG_KEY);
         }
 
         function addDevelopedPhotos(new_photos) {
-            return loadDevelopedPhotos().then(photos => {
+            return loadDevelopedPhotoIds().then(photos => {
                 photos = photos.concat(new_photos);
                 return setConfig(DEVELOPED_PHOTOS_CONFIG_KEY, photos);
             });
         }
 
-        function deleteDatabase() {
-            indexedDB.deleteDatabase(DB_NAME)
+        function loadAllDevelopedPhotos() {
+            return loadDevelopedPhotoIds().then(photos =>
+                Promise.all(photos.map(loadPhoto))
+            )
         }
+
+
 
 
         /// Add the given photo to the film with the provided id
@@ -156,7 +169,7 @@ export function PhotoDB(cb) {
             return new Promise((resolve, _) => {
                 Promise.all([addPhoto(photo), loadFilm(filmId)]).then(([photoId, film]) => {
                     film.photos.push(photoId)
-                    getFilmStore().put(film, filmId).onsuccess = e => {
+                    getFilmStore().put(film).onsuccess = e => {
                         resolve(film)
                     };
                 });
@@ -164,7 +177,41 @@ export function PhotoDB(cb) {
         }
 
         function addPhotoToActiveFilm(photo) {
-            return loadActiveFilm().then(filmId => addPhotoToFilm(filmId, photo))
+            return loadActiveFilmId().then(filmId => addPhotoToFilm(filmId, photo))
+        }
+
+
+        // Takes the photos of the given film and adds them to the list of developed photos
+        // This also removes that film and return the film
+        function developFilm(filmId) {
+            return loadFilm(filmId).then((film) =>
+                Promise.all([addDevelopedPhotos(film.photos), deleteFilm(filmId)]).then(() => film)
+            )
+        }
+
+
+        function loadAllFilms() {
+            return new Promise((resolve, _) => {
+                getFilmStore().getAll().onsuccess = e => resolve(e.target.result)
+            })
+        }
+
+        function loadAllFilmsInDevelopment() {
+            return Promise.all([loadActiveFilmId(), loadAllFilms()]).then(
+                ([activeFilmId, allFilms]) => {
+                    const activeIndex = allFilms.findIndex(film => film.id == activeFilmId);
+                    if (activeIndex !== -1) {
+                        allFilms.splice(activeIndex, 1);
+                    }
+                    return allFilms;
+                })
+
+        }
+
+
+
+        function deleteDatabase() {
+            indexedDB.deleteDatabase(DB_NAME)
         }
 
         cb({
@@ -172,13 +219,29 @@ export function PhotoDB(cb) {
             loadPhoto,
             addFilm,
             loadFilm,
+            deleteFilm,
             addPhotoToFilm,
             deleteDatabase,
-            setActiveFilm,
-            loadActiveFilm,
-            loadDevelopedPhotos,
+            setActiveFilmId,
+            loadActiveFilmId,
+            loadAllDevelopedPhotos,
+            loadDevelopedPhotoIds,
             addDevelopedPhotos,
-            addPhotoToActiveFilm
+            addPhotoToActiveFilm,
+            loadActiveFilm,
+            developFilm,
+            loadAllFilmsInDevelopment
         })
     }
+}
+
+
+export let db = null;
+
+
+export function initdb(cb) {
+    PhotoDB(newDb => {
+        db = newDb;
+        cb()
+    })
 }
