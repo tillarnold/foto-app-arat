@@ -3,15 +3,6 @@ import { h, app } from "./vendor/hyperapp-2.0.18.js";
 import { gallery, shop, camera } from "./components.js";
 import { UpdateTime } from "./actions.js";
 
-navigator.serviceWorker
-  .register("./js/sw.js", { scope: "./" })
-  .then((reg) => {
-    console.log("Service Worker registration succeeded. Scope is " + reg.scope);
-  })
-  .catch((error) => {
-    console.log("Service Worker registration failed with " + error);
-  });
-
 const intervalSubscriber = (dispatch, { time, action }) => {
   let handle = setInterval(() => {
     dispatch(action);

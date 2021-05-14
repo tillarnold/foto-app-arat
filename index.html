@@ -19,5 +19,17 @@
   <body>
     <div id="container"></div>
     <script src="js/main.js" type="module"></script>
+    <script type="module">
+      navigator.serviceWorker
+        .register("./sw.js")
+        .then((reg) => {
+          console.log(
+            "Service Worker registration succeeded. Scope is " + reg.scope
+          );
+        })
+        .catch((error) => {
+          console.log("Service Worker registration failed with " + error);
+        });
+    </script>
   </body>
 </html>
