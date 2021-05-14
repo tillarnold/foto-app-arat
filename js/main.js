@@ -1,7 +1,7 @@
 import { initdb, db } from './persistence.js'
 import { h, text, app } from "./vendor/hyperapp-2.0.18.js"
 import { EnterMainGallery, TakePhoto } from './actions.js'
-import { film_indicator, film_lab } from './components.js'
+import { film_indicator, film_lab, gallery } from './components.js'
 
 
 initdb(() => {
@@ -21,7 +21,8 @@ initdb(() => {
                         h("button", { onclick: TakePhoto }, text("Snap")),
                         h("button", { onclick: EnterMainGallery }, text("Gallery")),
                         film_indicator(state),
-                        film_lab(state)
+                        film_lab(state),
+                        gallery(state),
                     ])
                 },
                 node: document.getElementById("container"),

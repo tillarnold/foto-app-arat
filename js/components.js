@@ -11,11 +11,13 @@ export const film_lab = ({ filmsInDevelopment }) => h("div", {}, [
     h("ul", {},
         filmsInDevelopment.map(film_lab_item)
     )
-
 ]);
 
-export const film_lab_item = film =>
-    h("li", {}, [
-        text(`The film was sent for development at ${film.date}`),
-        h("button", { onclick: [DevelopedFilmWasCollected, film.id] }, text("Get"))
-    ]);
+export const film_lab_item = film => h("li", {}, [
+    text(`The film was sent for development at ${new Date(film.developmentStartDate).toLocaleString()}`),
+    h("button", { onclick: [DevelopedFilmWasCollected, film.id] }, text("Get"))
+]);
+
+
+export const gallery = ({ galleryImages }) => h("div", {},
+    galleryImages.map(photo => h("img", { src: photo, class: "gallery-photo" })));

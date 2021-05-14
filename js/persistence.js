@@ -205,9 +205,17 @@ export function PhotoDB(cb) {
                     }
                     return allFilms;
                 })
-
         }
 
+
+        function addDevelopmentStartTimeStampToFilm(filmId, timestamp) {
+            return new Promise((resolve, _) => {
+                loadFilm(filmId).then(film => {
+                    film.developmentStartDate = timestamp;
+                    getFilmStore().put(film).onsuccess = e => resolve(e.target.result)
+                })
+            });
+        }
 
 
         function deleteDatabase() {
@@ -230,7 +238,8 @@ export function PhotoDB(cb) {
             addPhotoToActiveFilm,
             loadActiveFilm,
             developFilm,
-            loadAllFilmsInDevelopment
+            loadAllFilmsInDevelopment,
+            addDevelopmentStartTimeStampToFilm
         })
     }
 }

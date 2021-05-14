@@ -35,9 +35,11 @@ export const NewPhotoTaken = (state, film) => [{
         Promise.all([db.setActiveFilmId(newFilmId), db.loadFilm(newFilmId)]).then(([_, newFilm]) => {
             console.log("new film is ", newFilm, "because old film was", film)
             dispatch(NewFilmWasInserted, newFilm)
-            db.loadAllFilmsInDevelopment().then(films => {
-                dispatch(FilmsInDevelopmentChanged, films)
-            })
+            db.addDevelopmentStartTimeStampToFilm(film.id, Date.now()).then(() =>
+                db.loadAllFilmsInDevelopment().then(films => {
+                    dispatch(FilmsInDevelopmentChanged, films)
+                })
+            )
         })
     })
 }]];
@@ -50,7 +52,8 @@ export const DevelopedFilmWasCollected = (state, filmId) => [{
         db.loadAllFilmsInDevelopment().then(films => {
             dispatch(FilmsInDevelopmentChanged, films)
         })
-        dispatch(EnterGallery, developedFilm.photos)
+        Promise.all(developedFilm.photos.map(db.loadPhoto)).then(photos => dispatch(EnterGallery, photos))
+
     })
 }]]
 /*
