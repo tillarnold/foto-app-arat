@@ -17,12 +17,14 @@ initdb(() => {
                 view: (state) => {
                     console.log("State before render is", state)
                     return h("main", {}, [
-                        h("h1", {}, text("To do list")),
-                        h("button", { onclick: TakePhoto }, text("Snap")),
-                        h("button", { onclick: EnterMainGallery }, text("Gallery")),
-                        film_indicator(state),
-                        film_lab(state),
-                        gallery(state),
+                        state.galleryImages.length === 0 && h("div", {}, [
+                            h("h1", {}, text("To do list")),
+                            h("button", { onclick: TakePhoto }, text("Snap")),
+                            h("button", { onclick: EnterMainGallery }, text("Gallery")),
+                            film_indicator(state),
+                            film_lab(state),
+                        ]),
+                        state.galleryImages.length > 0 && gallery(state),
                     ])
                 },
                 node: document.getElementById("container"),
