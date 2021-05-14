@@ -1,13 +1,16 @@
 {
   "short_name": "Foto-App - Take your time. Take your Photo.",
   "name": "Foto-App",
-  "icons": [{
-    "src": "icon.png",
-    "type": "image/png",
-    "sizes": "192x192"
-  }],
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
   "start_url": "/foto-app-arat/index.html",
   "display": "fullscreen",
   "background_color": "#fafafa",
-  "theme_color": "#fafafa"
+  "theme_color": "#fafafa",
+  "orientation": "landscape"
 }
