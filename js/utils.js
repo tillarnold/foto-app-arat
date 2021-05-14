@@ -1,28 +1,28 @@
 export function indexIntoObject(path, root) {
-    let obj = root;
-    for (let el of path) {
-        obj = obj[el]
-    }
-    return obj;
+  let obj = root;
+  for (let el of path) {
+    obj = obj[el];
+  }
+  return obj;
 }
 
 export function timeStamp() {
-    return Date.now()
+  return Date.now();
 }
 
 export function jsonclone(obj) {
-    return JSON.parse(JSON.stringify(obj))
+  return JSON.parse(JSON.stringify(obj));
 }
 
 export function repeat(count, value) {
-    return Array(count).fill(value);
+  return Array(count).fill(value);
 }
 
 export function download(href, name = "img.png") {
-    const a = document.createElement("a");
-    a.href = href
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const a = document.createElement("a");
+  a.href = href;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

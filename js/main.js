@@ -1,47 +1,72 @@
-import { initdb, db } from './persistence.js'
-import { h, text, app } from "./vendor/hyperapp-2.0.18.js"
-import { EnterMainGallery, TakePhoto, ResetDb } from './actions.js'
-import { film_indicator, film_lab, gallery } from './components.js'
-
+import { initdb, db } from "./persistence.js";
+import { h, text, app } from "./vendor/hyperapp-2.0.18.js";
+import {
+  EnterMainGallery,
+  TakePhoto,
+  ResetDb,
+  EnterShop,
+  ExitShop,
+} from "./actions.js";
+import { film_indicator, film_lab, gallery } from "./components.js";
 
 initdb(() => {
-    window.pdb = db; //TODO: remove
-    Promise.all([db.loadActiveFilm(), db.loadAllFilmsInDevelopment()])
-        .then(([initialActiveFilm, initialFilmsInDevelopment]) => {
-            app({
-                init: {
-                    activeFilm: initialActiveFilm,
-                    filmsInDevelopment: initialFilmsInDevelopment,
-                    galleryImages: [],
+  window.pdb = db; //TODO: remove
+  Promise.all([db.loadActiveFilm(), db.loadAllFilmsInDevelopment()]).then(
+    ([initialActiveFilm, initialFilmsInDevelopment]) => {
+      app({
+        init: {
+          activeFilm: initialActiveFilm,
+          filmsInDevelopment: initialFilmsInDevelopment,
+          galleryImages: [],
+          path: "camera",
+        },
+        view: (state) => {
+          console.log("State before render is", state);
+          return h("main", {}, [
+            h(
+              "div",
+              {
+                class: "camera-and-shop",
+                style: {
+                  marginTop: state.path === "gallery" ? "-100vh" : "0",
+                  marginLeft: state.path === "shop" ? "-100vw" : "0",
                 },
-                view: (state) => {
-                    console.log("State before render is", state)
-                    return h("main", {}, [
-                        h("div", { class: "camera" }, [
-                            h("div", { class: "camera-top-panel", style: { marginTop: state.galleryImages.length > 0 ? '-100vh' : '0' } }, [
-                                film_indicator(state),
-                                h("button", { onclick: TakePhoto, class: "snap-button" }),
-                            ]),
-                            h("div", { class: "camera-bottom-panel" }, [
-                                h("button", { onclick: EnterMainGallery }, text("Gallery")),
-                                film_lab(state),
-                                h("br", {}),
-                                h("button", { onclick: ResetDb }, text("RESET")),
-                            ]),
-                        ]),
-                        gallery(state),
-                    ])
-                },
-                node: document.getElementById("container"),
-            })
-        });
+              },
+              [
+                h("div", { class: "camera" }, [
+                  h(
+                    "div",
+                    {
+                      class: "camera-top-panel",
+                    },
+                    [
+                      film_indicator(state),
+                      h("button", { onclick: TakePhoto, class: "snap-button" }),
+                    ]
+                  ),
+                  h("div", { class: "camera-bottom-panel" }, [
+                    h("button", { onclick: EnterMainGallery }, text("Gallery")),
+                    h("button", { onclick: EnterShop }, text("Shop")),
 
-})
-
-
-
-
-
+                    film_lab(state),
+                    h("br", {}),
+                    h("button", { onclick: ResetDb }, text("RESET")),
+                  ]),
+                ]),
+                h("div", { class: "shop" }, [
+                  h("h1", {}, text("Shop")),
+                  h("button", { onclick: ExitShop }, text("Shop")),
+                ]),
+              ]
+            ),
+            gallery(state),
+          ]);
+        },
+        node: document.getElementById("container"),
+      });
+    }
+  );
+});
 
 /*
 
@@ -283,7 +308,3 @@ function FilmStateIndicator(size) {
 }
 
 */
-
-
-
-

@@ -1,4 +1,6 @@
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -9,7 +11,6 @@ body {
   width: 100vw;
   overflow-y: hidden;
 }
-
 
 .photo-in-film-free {
   display: inline-block;
@@ -33,7 +34,6 @@ body {
   flex: 1;
 }
 
-
 .snap-button {
   height: 6rem;
   width: 6rem;
@@ -45,8 +45,7 @@ body {
   background: white;
 }
 
-
-.snap-button:active{
+.snap-button:active {
   background: red;
 }
 
@@ -56,9 +55,9 @@ body {
   overflow-y: hidden;
 }
 
-
-.return-button, .gallery-button {
-  padding: 1rem
+.return-button,
+.gallery-button {
+  padding: 1rem;
 }
 
 .gallery {
@@ -72,6 +71,12 @@ body {
   padding-left: 3%;
 }
 
+.camera, .shop, .gallery {
+  width: 100vw;
+  height: 100vh;
+
+}
+
 .camera-top-panel {
   height: 30vh;
   background: silver;
@@ -83,9 +88,17 @@ body {
 .camera-bottom-panel {
   height: 70vh;
   background: gray;
-  background: radial-gradient(black 15%, transparent 16%) 0 0,radial-gradient(black 15%, transparent 16%) 8px 8px,radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
-  background-color:#282828;
-  background-size:16px 16px;
+  background: radial-gradient(black 15%, transparent 16%) 0 0,
+    radial-gradient(black 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
+  background-color: #282828;
+  background-size: 16px 16px;
   color: whitesmoke;
+}
 
+.camera-and-shop {
+  width: 200vw;
+  display: flex;
+  transition: margin 1s linear;
 }
