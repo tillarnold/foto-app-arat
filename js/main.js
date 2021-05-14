@@ -1,7 +1,6 @@
 import { initdb, db } from "./persistence.js";
-import { h, text, app } from "./vendor/hyperapp-2.0.18.js";
-import { EnterMainGallery, TakePhoto, ResetDb, EnterShop } from "./actions.js";
-import { film_indicator, film_lab, gallery, shop } from "./components.js";
+import { h, app } from "./vendor/hyperapp-2.0.18.js";
+import { gallery, shop, camera } from "./components.js";
 
 initdb(() => {
   window.pdb = db; //TODO: remove
@@ -26,41 +25,7 @@ initdb(() => {
                   marginLeft: state.path === "shop" ? "-100vw" : "0",
                 },
               },
-              [
-                h("div", { class: "camera" }, [
-                  h(
-                    "div",
-                    {
-                      class: "camera-top-panel",
-                    },
-                    [
-                      film_indicator(state),
-                      h("button", { onclick: TakePhoto, class: "snap-button" }),
-                    ]
-                  ),
-                  h("div", { class: "camera-bottom-panel" }, [
-                    h(
-                      "button",
-                      { class: "p-button", onclick: EnterMainGallery },
-                      text("Gallery")
-                    ),
-                    h(
-                      "button",
-                      { class: "p-button", onclick: EnterShop },
-                      text("Shop")
-                    ),
-
-                    film_lab(state),
-                    h("br", {}),
-                    h(
-                      "button",
-                      { class: "p-button", onclick: ResetDb },
-                      text("RESET")
-                    ),
-                  ]),
-                ]),
-                shop(state),
-              ]
+              [camera(state), shop(state)]
             ),
             gallery(state),
           ]);

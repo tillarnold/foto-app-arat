@@ -4,6 +4,10 @@ import {
   ExitGallery,
   DownloadPhoto,
   ExitShop,
+  EnterMainGallery,
+  TakePhoto,
+  ResetDb,
+  EnterShop,
 } from "./actions.js";
 
 export const film_indicator = ({ activeFilm }) =>
@@ -57,4 +61,30 @@ export const shop = () =>
   h("div", { class: "shop" }, [
     h("h1", {}, text("Shop")),
     h("button", { onclick: ExitShop, class: "p-button" }, text("Back")),
+  ]);
+
+export const camera = (state) =>
+  h("div", { class: "camera" }, [
+    h(
+      "div",
+      {
+        class: "camera-top-panel",
+      },
+      [
+        film_indicator(state),
+        h("button", { onclick: TakePhoto, class: "snap-button" }),
+      ]
+    ),
+    h("div", { class: "camera-bottom-panel" }, [
+      h(
+        "button",
+        { class: "p-button", onclick: EnterMainGallery },
+        text("Gallery")
+      ),
+      h("button", { class: "p-button", onclick: EnterShop }, text("Shop")),
+
+      film_lab(state),
+      h("br", {}),
+      h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
+    ]),
   ]);
