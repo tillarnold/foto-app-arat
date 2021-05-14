@@ -50,9 +50,9 @@ export const NewFilmWasInserted = (state, newFilm) => ({
   activeFilm: newFilm,
 });
 
-export const UpdateTime = (state, currentTime) => ({
+export const UpdateTime = (state) => ({
   ...state,
-  currentTime,
+  currentTime: Date.now(),
 });
 
 export const DisableZeroDevelopmentTime = (state) => ({
