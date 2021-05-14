@@ -36,11 +36,11 @@ export const film_lab = ({
   zeroDevelopmentTime,
   currentTime,
 }) =>
-  h("div", {}, [
+  h("div", { style: { marginTop: "1rem" } }, [
     text(`There are currently ${filmsInDevelopment.length} films in the lab`),
     h(
       "ul",
-      { style: { paddingLeft: "1rem", lineHeight: "2.5" } },
+      { style: { paddingLeft: "1rem", lineHeight: "2", marginTop: "0.5rem" } },
       filmsInDevelopment.map((film) =>
         film_lab_item(film, zeroDevelopmentTime, currentTime)
       )
@@ -61,7 +61,7 @@ export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
       film.developmentStartDate
     ).toLocaleTimeString()} is now done: ${isDone} and zeroDevelopmentTime is ${zeroDevelopmentTime}`
   );
-  return h("li", {}, [
+  return h("li", { style: { marginBottom: "0.3rem" } }, [
     /*text(
       `The film was sent for development at ${new Date(
         film.developmentStartDate
@@ -70,7 +70,10 @@ export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
     isDone
       ? h(
           "button",
-          { onclick: [DevelopedFilmWasCollected, film.id] },
+          {
+            onclick: [DevelopedFilmWasCollected, film.id],
+            class: "pickup-button",
+          },
           text("Ready for pickup!")
         )
       : text(`The film will be ready in ${timeFormat(timeLeft)}`),
@@ -99,21 +102,27 @@ export const gallery = ({ galleryImages }) =>
   ]);
 
 export const shop = (state) =>
-  h("div", { class: "shop" }, [
-    h("h1", {}, text("Shop")),
-    h("button", { onclick: ExitShop, class: "p-button" }, text("Back")),
-    state.zeroDevelopmentTime
-      ? h(
-          "button",
-          { onclick: DisableZeroDevelopmentTime, class: "p-button" },
-          text("Disable Instant development!")
-        )
-      : h(
-          "button",
-          { onclick: EnableZeroDevelopmentTime, class: "p-button" },
-          text("Enable Instant development!")
-        ),
-  ]);
+  h(
+    "div",
+    { class: "shop", style: { display: "flex", flexDirection: "column" } },
+    [
+      h("h1", {}, text("Shop")),
+      h("div", { style: { flex: 1 } }, [
+        state.zeroDevelopmentTime
+          ? h(
+              "button",
+              { onclick: DisableZeroDevelopmentTime, class: "p-button" },
+              text("Disable Instant development!")
+            )
+          : h(
+              "button",
+              { onclick: EnableZeroDevelopmentTime, class: "p-button" },
+              text("Enable Instant development!")
+            ),
+      ]),
+      h("button", { onclick: ExitShop, class: "p-button" }, text("Back")),
+    ]
+  );
 
 export const camera = (state) =>
   h("div", { class: "camera" }, [

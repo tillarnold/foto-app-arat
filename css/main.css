@@ -56,8 +56,12 @@ body {
 }
 
 .p-button {
-  padding: 0.5rem;
+  padding: 0.8rem;
   margin: 0.3rem;
+}
+
+.pickup-button {
+  padding: 0.5rem;
 }
 
 .gallery-photo {
