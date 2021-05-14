@@ -1,6 +1,6 @@
 import { PhotoCamera } from "./camera.js";
 import { db } from "./persistence.js";
-import { download } from "./utils.js";
+import { download, photoFileName } from "./utils.js";
 
 const camera = PhotoCamera();
 
@@ -20,13 +20,14 @@ export const DownloadPhoto = (state, photo) => [
   state,
   [
     (dispatch) => {
-      download(photo);
+      photoFileName(photo).then((name) => {
+        download(photo, name);
+      });
     },
   ],
 ];
 
 export const FilmsInDevelopmentChanged = (state, filmsInDevelopment) => {
-  console.log("FilmsInDevelopmentChanged", { state, filmsInDevelopment });
   return {
     ...state,
     filmsInDevelopment,
@@ -77,7 +78,6 @@ export const NewPhotoTaken = (state, film) => [
           db.setActiveFilmId(newFilmId),
           db.loadFilm(newFilmId),
         ]).then(([_, newFilm]) => {
-          console.log("new film is ", newFilm, "because old film was", film);
           dispatch(NewFilmWasInserted, newFilm);
           db.addDevelopmentStartTimeStampToFilm(film.id, Date.now()).then(() =>
             db.loadAllFilmsInDevelopment().then((films) => {

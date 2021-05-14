@@ -47,3 +47,31 @@ export function timeFormat(time) {
 
   return "under a minute";
 }
+
+function toBinary(string) {
+  const codeUnits = new Uint16Array(string.length);
+  for (let i = 0; i < codeUnits.length; i++) {
+    codeUnits[i] = string.charCodeAt(i);
+  }
+  return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
+}
+
+function arrayBufferToBase64(arrayBuffer) {
+  const decoder = new TextDecoder("utf8");
+  const decoded = decoder.decode(arrayBuffer);
+  const binaryString = toBinary(decoded);
+  return btoa(binaryString);
+}
+
+export function hashPhoto(photo) {
+  const enc = new TextEncoder(); // always utf-8
+  const array = enc.encode(photo);
+  return crypto.subtle.digest("SHA-1", array).then(arrayBufferToBase64);
+}
+
+export function photoFileName(photo) {
+  return hashPhoto(photo).then(
+    (hash) =>
+      hash.replace(/_/g, "").replace(/\//g, "").substring(3, 13) + ".png"
+  );
+}

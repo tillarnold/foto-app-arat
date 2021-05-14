@@ -11,7 +11,9 @@ export function PhotoCamera() {
       player.srcObject = stream;
       player.play();
     })
-    .catch((err) => console.log("An error occurred: " + err));
+    .catch((err) =>
+      console.error("An error occurred while: getting the camera stream", err)
+    );
 
   player.addEventListener("canplay", (ev) => {
     canvas.width = player.videoWidth;
