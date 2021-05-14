@@ -24,8 +24,8 @@ export const galleryImagesList = ({ galleryImages }) => h("div", {},
 )
 
 
-export const gallery = ({ galleryImages }) => h("div", {}, [
-    h("h1", {}, text("Gallery")),
+export const gallery = ({ galleryImages }) => h("div", {class: "gallery"}, [
+    h("p", {}, text("Gallery")),
     h("button", { onclick: ExitGallery }, text("back")),
     galleryImagesList({ galleryImages }),
 ]);

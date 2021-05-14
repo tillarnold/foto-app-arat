@@ -7,7 +7,9 @@
 body {
   height: 100vh;
   width: 100vw;
+  overflow-y: hidden;
 }
+
 
 .photo-in-film-free {
   display: inline-block;
@@ -28,20 +30,30 @@ body {
 .film-state {
   padding: 10px;
   display: inline-block;
+  flex: 1;
 }
 
+
 .snap-button {
-  float: right;
-  width: 12rem;
-  height: 5rem;
+  height: 6rem;
+  width: 6rem;
+  align-self: center;
+  margin: 3rem;
+  border-radius: 100%;
+  outline: none;
+  border: 1px solid black;
+  background: white;
+}
+
+
+.snap-button:active{
+  background: red;
 }
 
 #container {
   background: whitesmoke;
   height: 100vh;
-  width: 100vw;
-  padding: 1rem;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 
@@ -49,7 +61,31 @@ body {
   padding: 1rem
 }
 
+.gallery {
+  height: 100vh;
+  background: gray;
+  overflow-y: auto;
+}
+
 .gallery-photo {
   width: 30%;
   padding-left: 3%;
+}
+
+.camera-top-panel {
+  height: 30vh;
+  background: silver;
+  margin-top: 0;
+  transition: margin-top 1s linear;
+  display: flex;
+}
+
+.camera-bottom-panel {
+  height: 70vh;
+  background: gray;
+  background: radial-gradient(black 15%, transparent 16%) 0 0,radial-gradient(black 15%, transparent 16%) 8px 8px,radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+  background-color:#282828;
+  background-size:16px 16px;
+  color: whitesmoke;
+
 }

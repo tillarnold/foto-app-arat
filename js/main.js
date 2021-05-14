@@ -17,16 +17,19 @@ initdb(() => {
                 view: (state) => {
                     console.log("State before render is", state)
                     return h("main", {}, [
-                        state.galleryImages.length === 0 && h("div", {}, [
-                            h("h1", {}, text("Foto")),
-                            h("button", { onclick: TakePhoto }, text("Snap")),
-                            h("button", { onclick: EnterMainGallery }, text("Gallery")),
-                            film_indicator(state),
-                            film_lab(state),
-                            h("br", {}),
-                            h("button", { onclick: ResetDb }, text("RESET")),
+                        h("div", { class: "camera" }, [
+                            h("div", { class: "camera-top-panel", style: { marginTop: state.galleryImages.length > 0 ? '-100vh' : '0' } }, [
+                                film_indicator(state),
+                                h("button", { onclick: TakePhoto, class: "snap-button" }),
+                            ]),
+                            h("div", { class: "camera-bottom-panel" }, [
+                                h("button", { onclick: EnterMainGallery }, text("Gallery")),
+                                film_lab(state),
+                                h("br", {}),
+                                h("button", { onclick: ResetDb }, text("RESET")),
+                            ]),
                         ]),
-                        state.galleryImages.length > 0 && gallery(state),
+                        gallery(state),
                     ])
                 },
                 node: document.getElementById("container"),
