@@ -6,7 +6,7 @@
     "type": "image/png",
     "sizes": "192x192"
   }],
-  "start_url": "/index.html",
+  "start_url": "/foto-app-arat/index.html",
   "display": "fullscreen",
   "background_color": "#fafafa",
   "theme_color": "#fafafa"
