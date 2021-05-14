@@ -21,6 +21,14 @@ export const FilmsInDevelopmentChanged = (state, filmsInDevelopment) => {
     })
 };
 
+export const ResetDb = (state) => [{
+    ...state,
+}, [dispatch => {
+    db.deleteDatabase()
+    window.location.reload()
+}]];
+
+ResetDb
 
 export const NewFilmWasInserted = (state, newFilm) => ({
     ...state,

@@ -1,5 +1,5 @@
 import { h, text } from "./vendor/hyperapp-2.0.18.js"
-import { DevelopedFilmWasCollected, ExitGallery } from './actions.js'
+import { DevelopedFilmWasCollected, ExitGallery, ResetDb } from './actions.js'
 
 export const film_indicator = ({ activeFilm }) => h("div", { class: "film-state" }, [
     ...Array.from({ length: activeFilm.photos.length }, () => h("div", { class: "photo-in-film-used" })),
@@ -27,7 +27,6 @@ export const galleryImagesList = ({ galleryImages }) => h("div", {},
 export const gallery = ({ galleryImages }) => h("div", {}, [
     h("h1", {}, text("Gallery")),
     h("button", { onclick: ExitGallery }, text("back")),
-    galleryImagesList({ galleryImages })
+    galleryImagesList({ galleryImages }),
+    h("button", { onclick: ResetDb }, text("RESET")),
 ]);
-
-
