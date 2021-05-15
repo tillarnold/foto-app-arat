@@ -62,11 +62,6 @@ export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
     ).toLocaleTimeString()} is now done: ${isDone} and zeroDevelopmentTime is ${zeroDevelopmentTime}`
   );
   return h("li", { style: { marginBottom: "0.3rem" } }, [
-    /*text(
-      `The film was sent for development at ${new Date(
-        film.developmentStartDate
-      ).toLocaleString()}`
-    ),*/
     isDone
       ? h(
           "button",
@@ -77,7 +72,6 @@ export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
           text("Ready for pickup!")
         )
       : text(`The film will be ready in ${timeFormat(timeLeft)}`),
-    ,
   ]);
 };
 

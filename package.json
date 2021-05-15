@@ -1,0 +1,17 @@
+{
+  "name": "foto-app-arat",
+  "version": "0.0.0",
+  "description": "",
+  "main": "-",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write *.js js/*.js",
+    "lint": "eslint *.js js/*.js",
+    "check": "npm run format && npm run lint"
+  },
+  "author": "",
+  "devDependencies": {
+    "eslint": "^7.26.0",
+    "prettier": "^2.3.0"
+  }
+}

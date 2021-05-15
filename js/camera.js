@@ -15,7 +15,7 @@ export function PhotoCamera() {
       console.error("An error occurred while: getting the camera stream", err)
     );
 
-  player.addEventListener("canplay", (ev) => {
+  player.addEventListener("canplay", () => {
     canvas.width = player.videoWidth;
     canvas.height = player.videoHeight;
   });

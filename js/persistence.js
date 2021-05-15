@@ -50,45 +50,45 @@ export function PhotoDB(cb) {
     }
 
     function addPhoto(photo) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getPhotoStore().add(photo).onsuccess = (e) => resolve(e.target.result);
       });
     }
 
     function loadPhoto(id) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getPhotoStore().get(id).onsuccess = (e) => resolve(e.target.result);
       });
     }
 
     function addFilm() {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getFilmStore().add({ photos: [], frames: 8 }).onsuccess = (e) =>
           resolve(e.target.result);
       });
     }
 
     function loadFilm(id) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getFilmStore().get(id).onsuccess = (e) => resolve(e.target.result);
       });
     }
 
     function deleteFilm(id) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getFilmStore().delete(id).onsuccess = (e) => resolve(e.target.result);
       });
     }
 
     function setConfig(key, value) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getConfigStore().put(value, key).onsuccess = (e) =>
           resolve(e.target.result);
       });
     }
 
     function loadConfig(key) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getConfigStore().get(key).onsuccess = (e) => resolve(e.target.result);
       });
     }
@@ -125,11 +125,11 @@ export function PhotoDB(cb) {
     /// Add the given photo to the film with the provided id
     /// resolves to the new film
     function addPhotoToFilm(filmId, photo) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         Promise.all([addPhoto(photo), loadFilm(filmId)]).then(
           ([photoId, film]) => {
             film.photos.push(photoId);
-            getFilmStore().put(film).onsuccess = (e) => {
+            getFilmStore().put(film).onsuccess = () => {
               resolve(film);
             };
           }
@@ -152,7 +152,7 @@ export function PhotoDB(cb) {
     }
 
     function loadAllFilms() {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         getFilmStore().getAll().onsuccess = (e) => resolve(e.target.result);
       });
     }
@@ -172,7 +172,7 @@ export function PhotoDB(cb) {
     }
 
     function addDevelopmentStartTimeStampToFilm(filmId, timestamp) {
-      return new Promise((resolve, _) => {
+      return new Promise((resolve) => {
         loadFilm(filmId).then((film) => {
           film.developmentStartDate = timestamp;
           getFilmStore().put(film).onsuccess = (e) => resolve(e.target.result);

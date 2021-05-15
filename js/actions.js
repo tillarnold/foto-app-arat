@@ -16,7 +16,7 @@ function adjustViewfinderPosition() {
     (document.documentElement.clientWidth - videoWidth) / 2 + "px";
 }
 
-videoElement.addEventListener("canplay", (ev) => {
+videoElement.addEventListener("canplay", () => {
   const viewfinder = document.getElementById("viewfinder");
 
   console.log("adding video player");
@@ -26,7 +26,7 @@ videoElement.addEventListener("canplay", (ev) => {
   adjustViewfinderPosition();
 });
 
-window.addEventListener("resize", function (event) {
+window.addEventListener("resize", function () {
   adjustViewfinderPosition();
 });
 
@@ -45,7 +45,7 @@ export const TakePhoto = (state) => [
 export const DownloadPhoto = (state, photo) => [
   state,
   [
-    (dispatch) => {
+    () => {
       photoFileName(photo).then((name) => {
         download(photo, name);
       });
@@ -63,7 +63,7 @@ export const FilmsInDevelopmentChanged = (state, filmsInDevelopment) => {
 export const ResetDb = (state) => [
   state,
   [
-    (dispatch) => {
+    () => {
       if (window.confirm("Are you sure you want to delete all data?")) {
         db.deleteDatabase();
         window.location.reload();
@@ -71,8 +71,6 @@ export const ResetDb = (state) => [
     },
   ],
 ];
-
-ResetDb;
 
 export const NewFilmWasInserted = (state, newFilm) => ({
   ...state,
@@ -105,7 +103,7 @@ export const NewPhotoTaken = (state, film) => [
         Promise.all([
           db.setActiveFilmId(newFilmId),
           db.loadFilm(newFilmId),
-        ]).then(([_, newFilm]) => {
+        ]).then(([, newFilm]) => {
           dispatch(NewFilmWasInserted, newFilm);
           db.addDevelopmentStartTimeStampToFilm(film.id, Date.now()).then(() =>
             db.loadAllFilmsInDevelopment().then((films) => {
@@ -135,16 +133,6 @@ export const DevelopedFilmWasCollected = (state, filmId) => [
     },
   ],
 ];
-/*
-export const NewPhotoTaken = db => (state, film) => [{
-    ...state,
-    usedFrames: film.photos.length
-}, [film.photos.length >= film.frames && (dispatch => {
-    db.developActiveFilm().then(film => {
-        dispatch(FilmWasDeveloped(db), film)
-    })
-})]]
-*/
 
 export const EnterGallery = (state, galleryImages) => ({
   ...state,
