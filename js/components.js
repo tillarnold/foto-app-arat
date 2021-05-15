@@ -8,17 +8,15 @@ import {
   TakePhoto,
   ResetDb,
   EnterShop,
-  DisableZeroDevelopmentTime,
-  EnableZeroDevelopmentTime,
+  ChangeZeroDevelopmentMode,
 } from "./actions.js";
+import * as translator from "./translator.js";
 
 const SECONDS = 1000;
 const MINUTES = 60 * SECONDS;
 const HOURS = 60 * MINUTES;
 
 const DEVELOPMENT_TIME = 0.5 * HOURS;
-
-import { timeFormat } from "./utils.js";
 
 export const film_indicator = ({ activeFilm }) =>
   h("div", { class: "film-state" }, [
@@ -37,7 +35,7 @@ export const film_lab = ({
   currentTime,
 }) =>
   h("div", { style: { marginTop: "1rem" } }, [
-    text(`There are currently ${filmsInDevelopment.length} films in the lab`),
+    text(translator.nrOfFilmsInLab(filmsInDevelopment.length)),
     h(
       "ul",
       { style: { paddingLeft: "1rem", lineHeight: "2", marginTop: "0.5rem" } },
@@ -56,11 +54,6 @@ export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
     isDone = true;
   }
 
-  console.log(
-    `The film started at ${new Date(
-      film.developmentStartDate
-    ).toLocaleTimeString()} is now done: ${isDone} and zeroDevelopmentTime is ${zeroDevelopmentTime}`
-  );
   return h("li", { style: { marginBottom: "0.3rem" } }, [
     isDone
       ? h(
@@ -69,9 +62,9 @@ export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
             onclick: [DevelopedFilmWasCollected, film.id],
             class: "pickup-button",
           },
-          text("Ready for pickup!")
+          text(translator.readyForPickup())
         )
-      : text(`The film will be ready in ${timeFormat(timeLeft)}`),
+      : text(translator.filmReadyIn(timeLeft)),
   ]);
 };
 
@@ -90,8 +83,12 @@ export const galleryImagesList = ({ galleryImages }) =>
 
 export const gallery = ({ galleryImages }) =>
   h("div", { class: "gallery" }, [
-    h("p", {}, text("Gallery")),
-    h("button", { class: "p-button", onclick: ExitGallery }, text("back")),
+    h("p", {}, text(translator.gallery())),
+    h(
+      "button",
+      { class: "p-button", onclick: ExitGallery },
+      text(translator.back())
+    ),
     galleryImagesList({ galleryImages }),
   ]);
 
@@ -100,21 +97,23 @@ export const shop = (state) =>
     "div",
     { class: "shop", style: { display: "flex", flexDirection: "column" } },
     [
-      h("h1", {}, text("Shop")),
+      h("h1", {}, text(translator.shop())),
       h("div", { style: { flex: 1 } }, [
-        state.zeroDevelopmentTime
-          ? h(
-              "button",
-              { onclick: DisableZeroDevelopmentTime, class: "p-button" },
-              text("Disable Instant development!")
-            )
-          : h(
-              "button",
-              { onclick: EnableZeroDevelopmentTime, class: "p-button" },
-              text("Enable Instant development!")
-            ),
+        h("label", { style: { display: "flex" } }, [
+          text(translator.instantDevelopmentMode()),
+          h("input", {
+            style: { marginLeft: "1rem" },
+            type: "checkbox",
+            checked: state.zeroDevelopmentTime,
+            onchange: ChangeZeroDevelopmentMode,
+          }),
+        ]),
       ]),
-      h("button", { onclick: ExitShop, class: "p-button" }, text("Back")),
+      h(
+        "button",
+        { onclick: ExitShop, class: "p-button" },
+        text(translator.back())
+      ),
     ]
   );
 
@@ -137,9 +136,13 @@ export const camera = (state) =>
         h(
           "button",
           { class: "p-button", onclick: EnterMainGallery },
-          text("Gallery")
+          text(translator.gallery())
         ),
-        h("button", { class: "p-button", onclick: EnterShop }, text("Shop")),
+        h(
+          "button",
+          { class: "p-button", onclick: EnterShop },
+          text(translator.shop())
+        ),
         h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
       ]),
     ]),

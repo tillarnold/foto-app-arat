@@ -1,6 +1,7 @@
 import { PhotoCamera } from "./camera.js";
 import { db } from "./persistence.js";
 import { download, photoFileName } from "./utils.js";
+import * as translator from "./translator.js";
 
 const camera = PhotoCamera();
 
@@ -64,7 +65,7 @@ export const ResetDb = (state) => [
   state,
   [
     () => {
-      if (window.confirm("Are you sure you want to delete all data?")) {
+      if (window.confirm(translator.deleteDatabaseConfirmation())) {
         db.deleteDatabase();
         window.location.reload();
       }
@@ -82,14 +83,9 @@ export const UpdateTime = (state) => ({
   currentTime: Date.now(),
 });
 
-export const DisableZeroDevelopmentTime = (state) => ({
+export const ChangeZeroDevelopmentMode = (state, event) => ({
   ...state,
-  zeroDevelopmentTime: false,
-});
-
-export const EnableZeroDevelopmentTime = (state) => ({
-  ...state,
-  zeroDevelopmentTime: true,
+  zeroDevelopmentTime: event.target.checked,
 });
 
 export const NewPhotoTaken = (state, film) => [
