@@ -2,6 +2,7 @@ import { initdb, db } from "./persistence.js";
 import { h, app } from "./vendor/hyperapp-2.0.18.js";
 import { gallery, shop, camera } from "./components.js";
 import { UpdateTime } from "./actions.js";
+import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH } from "./constants.js";
 
 const intervalSubscriber = (dispatch, { time, action }) => {
   let handle = setInterval(() => {
@@ -21,7 +22,7 @@ initdb(() => {
           activeFilm: initialActiveFilm,
           filmsInDevelopment: initialFilmsInDevelopment,
           galleryImages: [],
-          path: "camera",
+          path: CAMERA_PATH,
           currentTime: Date.now(),
           zeroDevelopmentTime: false,
         },
@@ -33,8 +34,8 @@ initdb(() => {
               {
                 class: "camera-and-shop",
                 style: {
-                  marginTop: state.path === "gallery" ? "-100vh" : "0",
-                  marginLeft: state.path === "shop" ? "-100vw" : "0",
+                  marginTop: state.path === GALLERY_PATH ? "-100vh" : "0",
+                  marginLeft: state.path === SHOP_PATH ? "-100vw" : "0",
                   position: "relative",
                 },
               },
@@ -55,7 +56,7 @@ initdb(() => {
         },
         node: document.getElementById("container"),
         subscriptions: (state) => [
-          state.path === "camera" && onInterval(10000, UpdateTime),
+          state.path === CAMERA_PATH && onInterval(10000, UpdateTime),
         ],
       });
     }

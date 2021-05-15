@@ -2,8 +2,13 @@ import { PhotoCamera } from "./camera.js";
 import { db } from "./persistence.js";
 import { download, photoFileName } from "./utils.js";
 import * as translator from "./translator.js";
-
-const ENABLE_BLUR = false;
+import {
+  CAMERA_PATH,
+  ENABLE_BLUR,
+  ENABLE_VIEWFINDER,
+  GALLERY_PATH,
+  SHOP_PATH,
+} from "./constants.js";
 
 const camera = PhotoCamera();
 const videoElement = camera.getVideoElement();
@@ -18,21 +23,23 @@ function adjustViewfinderPosition() {
     (document.documentElement.clientWidth - videoWidth) / 2 + "px";
 }
 
-videoElement.addEventListener("canplay", () => {
-  const viewfinder = document.getElementById("viewfinder");
+if (ENABLE_VIEWFINDER) {
+  videoElement.addEventListener("canplay", () => {
+    const viewfinder = document.getElementById("viewfinder");
 
-  console.log("adding video player");
-  videoElement.style.width = "100px";
-  viewfinder.appendChild(camera.getVideoElement());
-  if (ENABLE_BLUR) {
-    viewfinder.style.filter = "blur(2px)";
-  }
-  adjustViewfinderPosition();
-});
+    console.log("adding video player");
+    videoElement.style.width = "100px";
+    viewfinder.appendChild(camera.getVideoElement());
+    if (ENABLE_BLUR) {
+      viewfinder.style.filter = "blur(2px)";
+    }
+    adjustViewfinderPosition();
+  });
 
-window.addEventListener("resize", function () {
-  adjustViewfinderPosition();
-});
+  window.addEventListener("resize", function () {
+    adjustViewfinderPosition();
+  });
+}
 
 export const TakePhoto = (state) => [
   state,
@@ -135,23 +142,23 @@ export const DevelopedFilmWasCollected = (state, filmId) => [
 
 export const EnterGallery = (state, galleryImages) => ({
   ...state,
-  path: "gallery",
+  path: GALLERY_PATH,
   galleryImages,
 });
 
 export const ExitGallery = (state) => ({
   ...state,
-  path: "camera",
+  path: CAMERA_PATH,
 });
 
 export const EnterShop = (state) => ({
   ...state,
-  path: "shop",
+  path: SHOP_PATH,
 });
 
 export const ExitShop = (state) => ({
   ...state,
-  path: "camera",
+  path: CAMERA_PATH,
 });
 
 export const EnterMainGallery = (state) => [

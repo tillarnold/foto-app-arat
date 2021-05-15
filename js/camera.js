@@ -12,7 +12,7 @@ export function PhotoCamera() {
       player.play();
     })
     .catch((err) =>
-      console.error("An error occurred while: getting the camera stream", err)
+      console.error("An error occurred while getting the camera stream:", err)
     );
 
   player.addEventListener("canplay", () => {
