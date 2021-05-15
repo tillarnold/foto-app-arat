@@ -3,6 +3,8 @@ export function PhotoCamera() {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
+  player.playsInline = true; //Needed to show to viewfinder on iOS
+
   navigator.mediaDevices
     .getUserMedia({
       video: { facingMode: "environment" },
@@ -53,11 +55,22 @@ export function fetchAudio(url, ctx) {
 
 export class AudioPlayer {
   constructor() {
-    this.audioContext = new AudioContext();
-    this.cache = new Map();
+    this.disabled = !("AudioContext" in window);
+    if (!this.disabled) {
+      this.audioContext = new AudioContext();
+      this.cache = new Map();
+      this.disabled = false;
+    } else {
+      console.warn(
+        "This device does not support AudioContext. Audio playback was disabled."
+      );
+    }
   }
 
   load(url) {
+    if (this.disabled) {
+      return Promise.reject();
+    }
     return fetchAudio(url, this.audioContext).then((result) => {
       this.cache.set(url, result);
       return result;
@@ -66,6 +79,9 @@ export class AudioPlayer {
 
   /// Returns the audio buffer at that url or an empty buffer if it is not loaded yet
   get(url) {
+    if (this.disabled) {
+      return Promise.reject();
+    }
     if (this.cache.has(url)) {
       return this.cache.get(url);
     } else {
@@ -76,6 +92,9 @@ export class AudioPlayer {
   }
 
   getAudioBufferSourceNode(url) {
+    if (this.disabled) {
+      return null;
+    }
     const source = this.audioContext.createBufferSource();
     source.buffer = this.get(url);
     source.connect(this.audioContext.destination);
@@ -83,12 +102,18 @@ export class AudioPlayer {
   }
 
   play(url) {
+    if (this.disabled) {
+      return null;
+    }
     const source = this.getAudioBufferSourceNode(url);
     source.start(0);
     return source;
   }
 
   loop(url) {
+    if (this.disabled) {
+      return null;
+    }
     const source = this.getAudioBufferSourceNode(url);
     source.loop = true;
     source.start(0);
