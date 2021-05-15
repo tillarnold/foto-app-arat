@@ -7,11 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write *.js js/*.js",
     "lint": "eslint *.js js/*.js",
-    "check": "npm run format && npm run lint"
+    "check": "npm run format && npm run lint",
+    "dist-main-js": "rollup js/main.js --format iife | terser --compress --mangle -o dist/js/main.js"
   },
   "author": "",
   "devDependencies": {
     "eslint": "^7.26.0",
-    "prettier": "^2.3.0"
+    "prettier": "^2.3.0",
+    "rollup": "^2.48.0",
+    "terser": "^5.7.0"
   }
 }
