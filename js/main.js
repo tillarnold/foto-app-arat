@@ -27,7 +27,7 @@ initdb(() => {
         },
         view: (state) => {
           console.log("State before render is", state);
-          return h("main", {}, [
+          return h("main", { style: { overflow: "hidden" } }, [
             h(
               "div",
               {
