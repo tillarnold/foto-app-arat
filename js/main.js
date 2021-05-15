@@ -2,7 +2,13 @@ import { initdb, db } from "./persistence.js";
 import { h, app } from "./vendor/hyperapp-2.0.18.js";
 import { gallery, shop, camera } from "./components.js";
 import { UpdateTime } from "./actions.js";
-import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH } from "./constants.js";
+import {
+  CAMERA_PATH,
+  GALLERY_PATH,
+  SHOP_PATH,
+  CLICK_SOUND_FILE,
+} from "./constants.js";
+import { globalAudioPlayer } from "./media.js";
 
 const intervalSubscriber = (dispatch, { time, action }) => {
   let handle = setInterval(() => {
@@ -15,50 +21,52 @@ const onInterval = (time, action) => [intervalSubscriber, { time, action }];
 
 initdb(() => {
   window.pdb = db; //TODO: remove
-  Promise.all([db.loadActiveFilm(), db.loadAllFilmsInDevelopment()]).then(
-    ([initialActiveFilm, initialFilmsInDevelopment]) => {
-      app({
-        init: {
-          activeFilm: initialActiveFilm,
-          filmsInDevelopment: initialFilmsInDevelopment,
-          galleryImages: [],
-          path: CAMERA_PATH,
-          currentTime: Date.now(),
-          zeroDevelopmentTime: false,
-        },
-        view: (state) => {
-          console.log("State before render is", state);
-          return h("main", { style: { overflow: "hidden" } }, [
-            h(
-              "div",
-              {
-                class: "camera-and-shop",
-                style: {
-                  marginTop: state.path === GALLERY_PATH ? "-100vh" : "0",
-                  marginLeft: state.path === SHOP_PATH ? "-100vw" : "0",
-                  position: "relative",
-                },
+  Promise.all([
+    db.loadActiveFilm(),
+    db.loadAllFilmsInDevelopment(),
+    globalAudioPlayer.load(CLICK_SOUND_FILE),
+  ]).then(([initialActiveFilm, initialFilmsInDevelopment]) => {
+    app({
+      init: {
+        activeFilm: initialActiveFilm,
+        filmsInDevelopment: initialFilmsInDevelopment,
+        galleryImages: [],
+        path: CAMERA_PATH,
+        currentTime: Date.now(),
+        zeroDevelopmentTime: false,
+      },
+      view: (state) => {
+        console.log("State before render is", state);
+        return h("main", { style: { overflow: "hidden" } }, [
+          h(
+            "div",
+            {
+              class: "camera-and-shop",
+              style: {
+                marginTop: state.path === GALLERY_PATH ? "-100vh" : "0",
+                marginLeft: state.path === SHOP_PATH ? "-100vw" : "0",
+                position: "relative",
               },
-              [
-                h("div", {
-                  id: "viewfinder",
-                  style: {
-                    position: "absolute",
-                    top: "0",
-                  },
-                }),
-                camera(state),
-                shop(state),
-              ]
-            ),
-            gallery(state),
-          ]);
-        },
-        node: document.getElementById("container"),
-        subscriptions: (state) => [
-          state.path === CAMERA_PATH && onInterval(10000, UpdateTime),
-        ],
-      });
-    }
-  );
+            },
+            [
+              h("div", {
+                id: "viewfinder",
+                style: {
+                  position: "absolute",
+                  top: "0",
+                },
+              }),
+              camera(state),
+              shop(state),
+            ]
+          ),
+          gallery(state),
+        ]);
+      },
+      node: document.getElementById("container"),
+      subscriptions: (state) => [
+        state.path === CAMERA_PATH && onInterval(10000, UpdateTime),
+      ],
+    });
+  });
 });

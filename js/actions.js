@@ -1,4 +1,4 @@
-import { PhotoCamera } from "./camera.js";
+import { PhotoCamera, globalAudioPlayer } from "./media.js";
 import { db } from "./persistence.js";
 import { download, photoFileName } from "./utils.js";
 import * as translator from "./translator.js";
@@ -8,6 +8,7 @@ import {
   ENABLE_VIEWFINDER,
   GALLERY_PATH,
   SHOP_PATH,
+  CLICK_SOUND_FILE,
 } from "./constants.js";
 
 const camera = PhotoCamera();
@@ -46,6 +47,7 @@ export const TakePhoto = (state) => [
   [
     (dispatch) => {
       const pic = camera.snap();
+      globalAudioPlayer.play(CLICK_SOUND_FILE);
       db.addPhotoToActiveFilm(pic).then((film) => {
         dispatch(NewPhotoTaken, film);
       });

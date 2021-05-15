@@ -118,7 +118,7 @@ export const shop = (state) =>
     ]
   );
 
-export const debugView = ({ filmsInDevelopment, activeFilm }) =>
+export const debugView = (state) =>
   h(
     "details",
     {
@@ -140,11 +140,7 @@ export const debugView = ({ filmsInDevelopment, activeFilm }) =>
         },
         text("Debug")
       ),
-      h(
-        "pre",
-        {},
-        text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))
-      ),
+      h("pre", {}, text(JSON.stringify(state, null, 2))),
     ]
   );
 
