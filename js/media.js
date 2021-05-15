@@ -2,6 +2,7 @@ export function PhotoCamera() {
   const player = document.createElement("video");
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
+  let playing = false;
 
   player.playsInline = true; //Needed to show to viewfinder on iOS
 
@@ -17,10 +18,13 @@ export function PhotoCamera() {
       console.error("An error occurred while getting the camera stream:", err)
     );
 
-  player.addEventListener("canplay", () => {
+  player.addEventListener("canplay", adjustSize);
+  window.addEventListener("resize", adjustSize);
+
+  function adjustSize() {
     canvas.width = player.videoWidth;
     canvas.height = player.videoHeight;
-  });
+  }
 
   function snap() {
     ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
@@ -32,16 +36,25 @@ export function PhotoCamera() {
   }
 
   function forcePlay() {
-    player
+    return player
       .play()
-      .catch((e) => console.log("error while playing video", e))
-      .then((e) => console.log("Play video was successufull", e));
+      .catch((e) => {
+        console.log("error while playing video", e);
+        playing = false;
+        return e;
+      })
+      .then((e) => {
+        console.log("Play video was successufull", e);
+        playing = true;
+        return e;
+      });
   }
 
   return {
     snap,
     getVideoElement,
     forcePlay,
+    isPlaying: () => playing,
   };
 }
 

@@ -1,4 +1,3 @@
-export const ENABLE_BLUR = false;
 export const ENABLE_VIEWFINDER = true;
 
 export const CAMERA_PATH = "@camera";

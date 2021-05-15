@@ -9,7 +9,6 @@ import {
   ResetDb,
   EnterShop,
   ChangeZeroDevelopmentMode,
-  FixCamera,
 } from "./actions.js";
 import * as translator from "./translator.js";
 
@@ -176,11 +175,6 @@ export const camera = (state) =>
           text(translator.shop())
         ),
         h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
-        h(
-          "button",
-          { class: "p-button", onclick: FixCamera },
-          text("FixCamera")
-        ),
       ]),
     ]),
   ]);

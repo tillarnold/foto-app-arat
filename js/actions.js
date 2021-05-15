@@ -4,7 +4,6 @@ import { download, photoFileName } from "./utils.js";
 import * as translator from "./translator.js";
 import {
   CAMERA_PATH,
-  ENABLE_BLUR,
   ENABLE_VIEWFINDER,
   GALLERY_PATH,
   SHOP_PATH,
@@ -30,9 +29,7 @@ function injectViewfinder() {
   console.log("adding video player");
   videoElement.style.width = "100px";
   viewfinder.appendChild(camera.getVideoElement());
-  if (ENABLE_BLUR) {
-    viewfinder.style.filter = "blur(2px)";
-  }
+
   adjustViewfinderPosition();
 
   window.addEventListener("resize", function () {
@@ -63,10 +60,29 @@ if (ENABLE_VIEWFINDER) {
   });
 }
 
+export const AskForVideoPermission = (state) => ({
+  ...state,
+  videoPermissionPopup: true,
+});
+
+export const GotVideoPermission = (state) => [
+  { ...state, videoPermissionPopup: false },
+  [
+    () => {
+      camera.forcePlay();
+    },
+  ],
+];
+
 export const TakePhoto = (state) => [
   state,
   [
     (dispatch) => {
+      if (!camera.isPlaying()) {
+        dispatch(AskForVideoPermission);
+        return;
+      }
+
       const pic = camera.snap();
       globalAudioPlayer.play(CLICK_SOUND_FILE);
       db.addPhotoToActiveFilm(pic).then((film) => {
@@ -93,15 +109,6 @@ export const FilmsInDevelopmentChanged = (state, filmsInDevelopment) => {
     filmsInDevelopment,
   };
 };
-
-export const FixCamera = (state) => [
-  state,
-  [
-    () => {
-      camera.forcePlay();
-    },
-  ],
-];
 
 export const ResetDb = (state) => [
   state,
