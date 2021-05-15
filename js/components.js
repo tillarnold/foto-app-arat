@@ -108,11 +108,42 @@ export const shop = (state) =>
             onchange: ChangeZeroDevelopmentMode,
           }),
         ]),
+        debugView(state),
       ]),
       h(
         "button",
         { onclick: ExitShop, class: "p-button" },
         text(translator.back())
+      ),
+    ]
+  );
+
+export const debugView = ({ filmsInDevelopment, activeFilm }) =>
+  h(
+    "details",
+    {
+      style: {
+        border: "1px solid #aaa",
+        borderRadius: "4px",
+        padding: ".5em .5em 0",
+      },
+    },
+    [
+      h(
+        "summary",
+        {
+          style: {
+            fontWeight: "bold",
+            margin: "-.5em -.5em 0",
+            padding: ".5em",
+          },
+        },
+        text("Debug")
+      ),
+      h(
+        "pre",
+        {},
+        text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))
       ),
     ]
   );
