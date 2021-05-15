@@ -9,6 +9,7 @@ import {
   ResetDb,
   EnterShop,
   ChangeZeroDevelopmentMode,
+  FixCamera,
 } from "./actions.js";
 import * as translator from "./translator.js";
 
@@ -118,7 +119,7 @@ export const shop = (state) =>
     ]
   );
 
-export const debugView = (state) =>
+export const debugView = ({ filmsInDevelopment, activeFilm }) =>
   h(
     "details",
     {
@@ -140,7 +141,11 @@ export const debugView = (state) =>
         },
         text("Debug")
       ),
-      h("pre", {}, text(JSON.stringify(state, null, 2))),
+      h(
+        "pre",
+        {},
+        text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))
+      ),
     ]
   );
 
@@ -171,6 +176,11 @@ export const camera = (state) =>
           text(translator.shop())
         ),
         h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
+        h(
+          "button",
+          { class: "p-button", onclick: FixCamera },
+          text("FixCamera")
+        ),
       ]),
     ]),
   ]);

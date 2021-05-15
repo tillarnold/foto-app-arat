@@ -9,7 +9,7 @@ export function PhotoCamera() {
     })
     .then((stream) => {
       player.srcObject = stream;
-      player.play();
+      forcePlay();
     })
     .catch((err) =>
       console.error("An error occurred while getting the camera stream:", err)
@@ -29,9 +29,17 @@ export function PhotoCamera() {
     return player;
   }
 
+  function forcePlay() {
+    player
+      .play()
+      .catch((e) => console.log("error while playing video", e))
+      .then((e) => console.log("Play video was successufull", e));
+  }
+
   return {
     snap,
     getVideoElement,
+    forcePlay,
   };
 }
 

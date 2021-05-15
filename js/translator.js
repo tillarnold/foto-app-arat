@@ -8,7 +8,7 @@ function getLangaugePreferences() {
   }
 
   languages.push(window.navigator.language);
-  languages.push(window.navigator.language?.split("-")[0]);
+  languages.push(window.navigator.language.split("-")[0]);
   languages.push("en");
 
   return languages;

@@ -73,6 +73,15 @@ export const FilmsInDevelopmentChanged = (state, filmsInDevelopment) => {
   };
 };
 
+export const FixCamera = (state) => [
+  state,
+  [
+    () => {
+      camera.forcePlay();
+    },
+  ],
+];
+
 export const ResetDb = (state) => [
   state,
   [
