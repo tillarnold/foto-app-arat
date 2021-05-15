@@ -24,21 +24,42 @@ function adjustViewfinderPosition() {
     (document.documentElement.clientWidth - videoWidth) / 2 + "px";
 }
 
-if (ENABLE_VIEWFINDER) {
-  videoElement.addEventListener("canplay", () => {
-    const viewfinder = document.getElementById("viewfinder");
+function injectViewfinder() {
+  const viewfinder = document.getElementById("viewfinder");
 
-    console.log("adding video player");
-    videoElement.style.width = "100px";
-    viewfinder.appendChild(camera.getVideoElement());
-    if (ENABLE_BLUR) {
-      viewfinder.style.filter = "blur(2px)";
-    }
-    adjustViewfinderPosition();
-  });
+  console.log("adding video player");
+  videoElement.style.width = "100px";
+  viewfinder.appendChild(camera.getVideoElement());
+  if (ENABLE_BLUR) {
+    viewfinder.style.filter = "blur(2px)";
+  }
+  adjustViewfinderPosition();
 
   window.addEventListener("resize", function () {
     adjustViewfinderPosition();
+  });
+}
+
+// Tries to inject the viewfinder and returns true on success false otherwise
+function tryToInjectViewfinder() {
+  const viewfinder = document.getElementById("viewfinder");
+  if (viewfinder) {
+    injectViewfinder();
+    console.log("Successfully injected viewfinder");
+    return true;
+  } else {
+    console.log("failed to inject viewfinder");
+    return false;
+  }
+}
+
+if (ENABLE_VIEWFINDER) {
+  videoElement.addEventListener("canplay", () => {
+    const viewfinderTryHandle = setInterval(() => {
+      if (tryToInjectViewfinder()) {
+        clearInterval(viewfinderTryHandle);
+      }
+    }, 300);
   });
 }
 
