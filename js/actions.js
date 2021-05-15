@@ -3,8 +3,9 @@ import { db } from "./persistence.js";
 import { download, photoFileName } from "./utils.js";
 import * as translator from "./translator.js";
 
-const camera = PhotoCamera();
+const ENABLE_BLUR = false;
 
+const camera = PhotoCamera();
 const videoElement = camera.getVideoElement();
 
 function adjustViewfinderPosition() {
@@ -23,7 +24,9 @@ videoElement.addEventListener("canplay", () => {
   console.log("adding video player");
   videoElement.style.width = "100px";
   viewfinder.appendChild(camera.getVideoElement());
-  viewfinder.style.filter = "blur(2px)";
+  if (ENABLE_BLUR) {
+    viewfinder.style.filter = "blur(2px)";
+  }
   adjustViewfinderPosition();
 });
 

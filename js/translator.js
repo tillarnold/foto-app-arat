@@ -25,7 +25,7 @@ function selectL(desc) {
       return selection();
     }
   }
-  console.error(`Missing translation!`);
+  console.error("Missing translation!");
   return "???";
 }
 
