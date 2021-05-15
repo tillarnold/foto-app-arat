@@ -129,23 +129,24 @@ export const camera = (state) =>
     h(
       "div",
       {
-        class: "camera-top-panel",
+        class: "camera__top-panel",
       },
       [
         film_indicator(state),
         h("button", { onclick: TakePhoto, class: "snap-button" }),
       ]
     ),
-    h("div", { class: "camera-bottom-panel" }, [
-      h(
-        "button",
-        { class: "p-button", onclick: EnterMainGallery },
-        text("Gallery")
-      ),
-      h("button", { class: "p-button", onclick: EnterShop }, text("Shop")),
+    h("div", { class: "camera__bottom-panel" }, [
+      h("div", { class: "camera__info-area" }, [film_lab(state)]),
 
-      film_lab(state),
-      h("br", {}),
-      h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
+      h("div", { class: "camera__button-bar" }, [
+        h(
+          "button",
+          { class: "p-button", onclick: EnterMainGallery },
+          text("Gallery")
+        ),
+        h("button", { class: "p-button", onclick: EnterShop }, text("Shop")),
+        h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
+      ]),
     ]),
   ]);

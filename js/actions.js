@@ -64,8 +64,10 @@ export const ResetDb = (state) => [
   state,
   [
     (dispatch) => {
-      db.deleteDatabase();
-      window.location.reload();
+      if (window.confirm("Are you sure you want to delete all data?")) {
+        db.deleteDatabase();
+        window.location.reload();
+      }
     },
   ],
 ];

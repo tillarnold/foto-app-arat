@@ -86,13 +86,19 @@ body {
   padding: 1rem;
 }
 
-.camera-top-panel {
+.camera-and-shop {
+  width: 200vw;
+  display: flex;
+  transition: margin 0.5s ease-in-out;
+}
+
+.camera__top-panel {
   height: 30vh;
   background: silver;
   display: flex;
 }
 
-.camera-bottom-panel {
+.camera__bottom-panel {
   height: 70vh;
   background: gray;
   background: radial-gradient(black 15%, transparent 16%) 0 0,
@@ -103,10 +109,13 @@ body {
   background-size: 16px 16px;
   color: whitesmoke;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
-.camera-and-shop {
-  width: 200vw;
-  display: flex;
-  transition: margin 0.5s ease-in-out;
+.camera__info-area {
+  flex: 1;
+}
+
+.camera__button-bar {
 }
