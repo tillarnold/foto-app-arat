@@ -35,9 +35,20 @@ initdb(() => {
                 style: {
                   marginTop: state.path === "gallery" ? "-100vh" : "0",
                   marginLeft: state.path === "shop" ? "-100vw" : "0",
+                  position: "relative",
                 },
               },
-              [camera(state), shop(state)]
+              [
+                h("div", {
+                  id: "viewfinder",
+                  style: {
+                    position: "absolute",
+                    top: "0",
+                  },
+                }),
+                camera(state),
+                shop(state),
+              ]
             ),
             gallery(state),
           ]);

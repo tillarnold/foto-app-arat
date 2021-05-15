@@ -17,10 +17,12 @@ function adjustViewfinderPosition() {
 }
 
 videoElement.addEventListener("canplay", (ev) => {
+  const viewfinder = document.getElementById("viewfinder");
+
   console.log("adding video player");
   videoElement.style.width = "100px";
-  const viewfinder = document.getElementById("viewfinder");
   viewfinder.appendChild(camera.getVideoElement());
+  viewfinder.style.filter = "blur(2px)";
   adjustViewfinderPosition();
 });
 
