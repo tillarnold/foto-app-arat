@@ -69,7 +69,7 @@ export class AudioPlayer {
 
   load(url) {
     if (this.disabled) {
-      return Promise.reject();
+      return Promise.resolve(new Error("AudioContext not supported"));
     }
     return fetchAudio(url, this.audioContext).then((result) => {
       this.cache.set(url, result);
@@ -80,7 +80,7 @@ export class AudioPlayer {
   /// Returns the audio buffer at that url or an empty buffer if it is not loaded yet
   get(url) {
     if (this.disabled) {
-      return Promise.reject();
+      return Promise.resolve(new Error("AudioContext not supported"));
     }
     if (this.cache.has(url)) {
       return this.cache.get(url);
@@ -93,7 +93,7 @@ export class AudioPlayer {
 
   getAudioBufferSourceNode(url) {
     if (this.disabled) {
-      return null;
+      return new Error("AudioContext not supported");
     }
     const source = this.audioContext.createBufferSource();
     source.buffer = this.get(url);
@@ -103,7 +103,7 @@ export class AudioPlayer {
 
   play(url) {
     if (this.disabled) {
-      return null;
+      return new Error("AudioContext not supported");
     }
     const source = this.getAudioBufferSourceNode(url);
     source.start(0);
@@ -112,7 +112,7 @@ export class AudioPlayer {
 
   loop(url) {
     if (this.disabled) {
-      return null;
+      return new Error("AudioContext not supported");
     }
     const source = this.getAudioBufferSourceNode(url);
     source.loop = true;
