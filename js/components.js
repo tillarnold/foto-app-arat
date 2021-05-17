@@ -179,7 +179,7 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
             flexDirection: "column",
             padding: "1rem",
             borderRadius: "3px",
-            marginTop: showVideoPermissionPopup ? 0 : "-300%",
+            marginTop: showVideoPermissionPopup ? 0 : "-200vh",
             transition: "0.5s margin",
           },
         },
