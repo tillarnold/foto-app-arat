@@ -1,63 +1,9 @@
-import { PhotoCamera, globalAudioPlayer } from "./media.js";
+import { globalAudioPlayer } from "./media.js";
 import { db } from "./persistence.js";
 import { download, photoFileName } from "./utils.js";
 import * as translator from "./translator.js";
-import {
-  CAMERA_PATH,
-  ENABLE_VIEWFINDER,
-  GALLERY_PATH,
-  SHOP_PATH,
-  CLICK_SOUND_FILE,
-} from "./constants.js";
-
-const camera = PhotoCamera();
-const videoElement = camera.getVideoElement();
-
-function adjustViewfinderPosition() {
-  const viewfinder = document.getElementById("viewfinder");
-  const videoWidth = parseInt(
-    window.getComputedStyle(document.querySelector("#viewfinder video")).width,
-    10
-  );
-  viewfinder.style.left = (document.documentElement.clientWidth - videoWidth) / 2 + "px";
-}
-
-function injectViewfinder() {
-  const viewfinder = document.getElementById("viewfinder");
-
-  console.log("adding video player");
-  videoElement.style.width = "100px";
-  viewfinder.appendChild(camera.getVideoElement());
-
-  adjustViewfinderPosition();
-
-  window.addEventListener("resize", function () {
-    adjustViewfinderPosition();
-  });
-}
-
-// Tries to inject the viewfinder and returns true on success false otherwise
-function tryToInjectViewfinder() {
-  const viewfinder = document.getElementById("viewfinder");
-  if (viewfinder) {
-    injectViewfinder();
-    console.log("Successfully injected viewfinder");
-    return true;
-  } else {
-    console.log("failed to inject viewfinder");
-    return false;
-  }
-}
-
-if (ENABLE_VIEWFINDER) {
-  videoElement.addEventListener("canplay", () => {
-    const viewfinderTryHandle = setInterval(() => {
-      if (tryToInjectViewfinder()) {
-        clearInterval(viewfinderTryHandle);
-      }
-    }, 300);
-  });
-}
+import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH, CLICK_SOUND_FILE } from "./constants.js";
+import { camera } from "./dom.js";
 
 export const AskForVideoPermission = (state) => ({
   ...state,

@@ -151,9 +151,11 @@ export function PhotoDB(cb) {
 
 export let db = null;
 
-export function initdb(cb) {
-  PhotoDB((newDb) => {
-    db = newDb;
-    cb();
+export function initdb() {
+  return new Promise((resolve) => {
+    PhotoDB((newDb) => {
+      db = newDb;
+      resolve();
+    });
   });
 }

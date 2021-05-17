@@ -13,6 +13,7 @@ import {
   AskForVideoPermission,
 } from "./actions.js";
 import * as translator from "./translator.js";
+import { GALLERY_PATH, SHOP_PATH } from "./constants.js";
 
 const SECONDS = 1000;
 const MINUTES = 60 * SECONDS;
@@ -20,7 +21,55 @@ const HOURS = 60 * MINUTES;
 
 const DEVELOPMENT_TIME = 0.5 * HOURS;
 
-export const film_indicator = ({ activeFilm }) =>
+export const rootComponent = (state) =>
+  h("main", { style: { overflow: "hidden" } }, [
+    h(
+      "div",
+      {
+        class: "camera-and-shop",
+        style: {
+          marginTop: state.path === GALLERY_PATH ? "calc(var(--vh, 1vh) * -100)" : "0",
+          marginLeft: state.path === SHOP_PATH ? "-100vw" : "0",
+          position: "relative",
+        },
+      },
+      [
+        h("div", {
+          id: "viewfinder",
+          style: {
+            position: "absolute",
+            top: "0",
+          },
+        }),
+        camera(state),
+        shop(state),
+      ]
+    ),
+    gallery(state),
+    videoPermissionPopup(state.showVideoPermissionPopup),
+  ]);
+
+export const camera = (state) =>
+  h("div", { class: "camera" }, [
+    h(
+      "div",
+      {
+        class: "camera__top-panel",
+      },
+      [filmIndicator(state), h("button", { onclick: TakePhoto, class: "snap-button" })]
+    ),
+    h("div", { class: "camera__bottom-panel" }, [
+      h("div", { class: "camera__info-area" }, [filmLab(state)]),
+
+      h("div", { class: "camera__button-bar" }, [
+        h("button", { class: "p-button", onclick: EnterMainGallery }, text(translator.gallery())),
+        h("button", { class: "p-button", onclick: EnterShop }, text(translator.shop())),
+        h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
+      ]),
+    ]),
+  ]);
+
+export const filmIndicator = ({ activeFilm }) =>
   h("div", { class: "film-state" }, [
     ...Array.from({ length: activeFilm.photos.length }, () =>
       h("div", { class: "photo-in-film-used" })
@@ -30,17 +79,17 @@ export const film_indicator = ({ activeFilm }) =>
     ),
   ]);
 
-export const film_lab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }) =>
+export const filmLab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }) =>
   h("div", { style: { marginTop: "1rem" } }, [
     text(translator.nrOfFilmsInLab(filmsInDevelopment.length)),
     h(
       "ul",
       { style: { paddingLeft: "1rem", lineHeight: "2", marginTop: "0.5rem" } },
-      filmsInDevelopment.map((film) => film_lab_item(film, zeroDevelopmentTime, currentTime))
+      filmsInDevelopment.map((film) => filmLabItem(film, zeroDevelopmentTime, currentTime))
     ),
   ]);
 
-export const film_lab_item = (film, zeroDevelopmentTime, currentTime) => {
+export const filmLabItem = (film, zeroDevelopmentTime, currentTime) => {
   const timeInDevelopment = currentTime - film.developmentStartDate;
   const timeLeft = DEVELOPMENT_TIME - timeInDevelopment;
   let isDone = timeLeft <= 0;
@@ -127,26 +176,6 @@ export const debugView = ({ filmsInDevelopment, activeFilm }) =>
       h("pre", {}, text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))),
     ]
   );
-
-export const camera = (state) =>
-  h("div", { class: "camera" }, [
-    h(
-      "div",
-      {
-        class: "camera__top-panel",
-      },
-      [film_indicator(state), h("button", { onclick: TakePhoto, class: "snap-button" })]
-    ),
-    h("div", { class: "camera__bottom-panel" }, [
-      h("div", { class: "camera__info-area" }, [film_lab(state)]),
-
-      h("div", { class: "camera__button-bar" }, [
-        h("button", { class: "p-button", onclick: EnterMainGallery }, text(translator.gallery())),
-        h("button", { class: "p-button", onclick: EnterShop }, text(translator.shop())),
-        h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
-      ]),
-    ]),
-  ]);
 
 export const videoPermissionPopup = (showVideoPermissionPopup) =>
   h(
