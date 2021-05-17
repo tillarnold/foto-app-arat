@@ -62,11 +62,11 @@ if (ENABLE_VIEWFINDER) {
 
 export const AskForVideoPermission = (state) => ({
   ...state,
-  videoPermissionPopup: true,
+  showVideoPermissionPopup: true,
 });
 
 export const GotVideoPermission = (state) => [
-  { ...state, videoPermissionPopup: false },
+  { ...state, showVideoPermissionPopup: false },
   [
     () => {
       camera.forcePlay();

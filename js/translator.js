@@ -126,17 +126,17 @@ export function timeFormat(time) {
 
   if (timeInDays > 1) {
     const res = Math.round(timeInDays);
-    return res + " " + (res == 1 ? day() : days());
+    return res + " " + (res === 1 ? day() : days());
   }
 
   if (timeInHours > 1) {
     const res = Math.round(timeInHours);
-    return res + " " + (res == 1 ? hour() : hours());
+    return res + " " + (res === 1 ? hour() : hours());
   }
 
   if (timeInMinutes > 1) {
     const res = Math.round(timeInMinutes);
-    return res + " " + (res == 1 ? minute() : minutes());
+    return res + " " + (res === 1 ? minute() : minutes());
   }
 
   selectL({

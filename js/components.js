@@ -9,6 +9,8 @@ import {
   ResetDb,
   EnterShop,
   ChangeZeroDevelopmentMode,
+  GotVideoPermission,
+  AskForVideoPermission,
 } from "./actions.js";
 import * as translator from "./translator.js";
 
@@ -109,6 +111,11 @@ export const shop = (state) =>
           }),
         ]),
         debugView(state),
+        h(
+          "button",
+          { onclick: AskForVideoPermission, class: "p-button" },
+          text("popuptest")
+        ),
       ]),
       h(
         "button",
@@ -178,3 +185,52 @@ export const camera = (state) =>
       ]),
     ]),
   ]);
+
+export const videoPermissionPopup = (showVideoPermissionPopup) =>
+  h(
+    "div",
+    {
+      style: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        background: showVideoPermissionPopup ? "rgba(0.3,0.3,0.3,0.6)" : "none",
+        transition: "0.3s",
+        pointerEvents: showVideoPermissionPopup ? "auto" : "none",
+      },
+    },
+    [
+      h(
+        "div",
+        {
+          style: {
+            background: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            padding: "1rem",
+            borderRadius: "3px",
+            marginTop: showVideoPermissionPopup ? 0 : "-100%",
+            transition: "0.5s margin",
+          },
+        },
+        [
+          text(
+            "Hey, please press this button to allow the app to show you video."
+          ),
+          h(
+            "button",
+            { class: "p-button", onclick: GotVideoPermission },
+            text("FixCamera")
+          ),
+        ]
+      ),
+    ]
+  );

@@ -1,7 +1,7 @@
 import { initdb, db } from "./persistence.js";
-import { h, app, text } from "./vendor/hyperapp-2.0.18.js";
-import { gallery, shop, camera } from "./components.js";
-import { UpdateTime, GotVideoPermission } from "./actions.js";
+import { h, app } from "./vendor/hyperapp-2.0.18.js";
+import { gallery, shop, camera, videoPermissionPopup } from "./components.js";
+import { UpdateTime } from "./actions.js";
 import {
   CAMERA_PATH,
   GALLERY_PATH,
@@ -34,7 +34,7 @@ initdb(() => {
         path: CAMERA_PATH,
         currentTime: Date.now(),
         zeroDevelopmentTime: false,
-        videoPermissionPopup: false,
+        showVideoPermissionPopup: true,
       },
       view: (state) => {
         console.log("State before render is", state);
@@ -62,34 +62,7 @@ initdb(() => {
             ]
           ),
           gallery(state),
-          state.videoPermissionPopup &&
-            h(
-              "div",
-              {
-                style: {
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100vw",
-                  height: "100vh",
-                  background: "white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                },
-              },
-              [
-                text(
-                  "Hey, please press this button to allow the app to show you video."
-                ),
-                h(
-                  "button",
-                  { class: "p-button", onclick: GotVideoPermission },
-                  text("FixCamera")
-                ),
-              ]
-            ),
+          videoPermissionPopup(state.showVideoPermissionPopup),
         ]);
       },
       node: document.getElementById("container"),
