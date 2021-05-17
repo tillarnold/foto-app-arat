@@ -1,3 +1,20 @@
+/**
+ * Represents a Camera used to take still photos and also exposes a Video elemetn that can be used to show a preview to the user.
+ *
+ * The overall flow of taking a photo is:
+ *   1. Use getUserMedia to get a stream from the user's camera
+ *   2. Create an HTML video element and set the source of the video element to the stream
+ *      This video element can also be added to the document to show a preview to the user
+ *   3. When a photo should be taken draw the current video frame from the video element to
+ *      a canvas and convert the canvas to a a DataURL
+ *
+ *
+ * There are a few complications that this class also adresses.
+ * Of particular interest is that on some platforms the video element used is not allowed to
+ * play as those platforms block autoplay. In such cases the isPlaying function will return false
+ * and a message should be shown to the user. With the user action the forcePlay function can then
+ * be called to allow the video to play.
+ */
 export function PhotoCamera() {
   const player = document.createElement("video");
   const canvas = document.createElement("canvas");
@@ -24,6 +41,11 @@ export function PhotoCamera() {
     canvas.height = player.videoHeight;
   }
 
+  /**
+   * Takes a photo
+   *
+   * @returns {string} A picture as a DataUrl
+   */
   function snap() {
     adjustSize();
     ctx.drawImage(player, 0, 0, canvas.width, canvas.height);

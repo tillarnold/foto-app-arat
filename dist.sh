@@ -16,7 +16,7 @@ cd "$SCRIPT_DIR"
 rm -rf dist
 mkdir dist
 
-cp -r img dist/
+cp -r assets dist/
 cp -r css dist/
 mkdir dist/js
 npm run dist-main-js

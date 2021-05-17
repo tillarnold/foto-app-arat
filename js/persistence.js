@@ -1,3 +1,11 @@
+/**
+ * Takes a IDBRequest and returns a promise that resolves
+ * to the target.result property of the onsuccess Event
+ *
+ * This helper function is used in PhotoDB to convert the callback-based
+ * IndexedDB API into a more convinient promise-based API
+ * @param {IDBRequest} v
+ */
 function resultPromise(v) {
   return new Promise((resolve) => {
     v.onsuccess = (e) => resolve(e.target.result);
@@ -70,8 +78,12 @@ export function PhotoDB(cb) {
       return await Promise.all(photos.map(loadPhoto));
     }
 
-    /// Add the given photo to the film with the provided id
-    /// resolves to the new film
+    /**
+     * Add the given photo to the film with the provided id
+     * resolves to the new film
+     * @param {number} filmId
+     * @param {Photo} photo
+     */
     async function addPhotoToFilm(filmId, photo) {
       const [photoId, film] = await Promise.all([addPhoto(photo), loadFilm(filmId)]);
       film.photos.push(photoId);
@@ -84,8 +96,12 @@ export function PhotoDB(cb) {
       return await addPhotoToFilm(filmId, photo);
     }
 
-    // Takes the photos of the given film and adds them to the list of developed photos
-    // This also removes that film and return the film
+    /**
+     * Takes the photos of the given film and adds them to the list of developed photos
+     * This also removes that film and return the film
+     * @param {number} filmId
+     * @returns {Promise<Film>} film that was deleted
+     */
     async function developFilm(filmId) {
       const film = await loadFilm(filmId);
       await Promise.all([addDevelopedPhotos(film.photos), deleteFilm(filmId)]);
