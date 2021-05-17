@@ -209,7 +209,13 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
             padding: "1rem",
             borderRadius: "3px",
             marginTop: showVideoPermissionPopup ? 0 : "-200vh",
-            transition: "0.5s margin",
+            transform: "scale(" + (showVideoPermissionPopup ? "1" : "0.3") + ")",
+            "--movingTime": "0.3s",
+            "--transformingTime": "0.1s",
+            transition: showVideoPermissionPopup
+              ? "margin var(--movingTime) 0s, transform var(--transformingTime) var(--movingTime)"
+              : "margin var(--movingTime) var(--transformingTime), transform var(--transformingTime) 0s",
+            boxShadow: "2px 2px 5px 0px rgba(0,0,0,0.2)",
           },
         },
         [
