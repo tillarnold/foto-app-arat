@@ -161,7 +161,7 @@ export function PhotoDB(cb) {
       return Promise.all([loadActiveFilmId(), loadAllFilms()]).then(
         ([activeFilmId, allFilms]) => {
           const activeIndex = allFilms.findIndex(
-            (film) => film.id == activeFilmId
+            (film) => film.id === activeFilmId
           );
           if (activeIndex !== -1) {
             allFilms.splice(activeIndex, 1);

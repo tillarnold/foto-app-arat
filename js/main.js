@@ -34,7 +34,7 @@ initdb(() => {
         path: CAMERA_PATH,
         currentTime: Date.now(),
         zeroDevelopmentTime: false,
-        showVideoPermissionPopup: true,
+        showVideoPermissionPopup: false,
       },
       view: (state) => {
         console.log("State before render is", state);
