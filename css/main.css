@@ -66,8 +66,14 @@ body {
 }
 
 .gallery-photo {
-  width: 30%;
-  padding-left: 3%;
+  --spacing-widht: 1rem;
+  width: calc((100% - 2 * var(--spacing-widht)) / 3);
+  float: left;
+}
+
+.gallery-photo:not(:nth-child(3n)) {
+  margin-right: var(--spacing-widht);
+  margin-bottom: var(--spacing-widht);
 }
 
 .camera,
