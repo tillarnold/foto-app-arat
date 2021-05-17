@@ -67,6 +67,18 @@ export const instantDevelopmentMode = () =>
     en: () => "Instant camera mode",
   });
 
+export const pleaseAllowVideoPlayback = () =>
+  selectL({
+    de: () => "Hey, bitte dücke diesen Knopf um der App zu erlauben Video darzustellen.",
+    en: () => "Hey, please press this button to allow the app to show you video.",
+  });
+
+export const allow = () =>
+  selectL({
+    de: () => "Erlauben",
+    en: () => "Allow",
+  });
+
 export const nrOfFilmsInLab = (count) => {
   const single = count === 1;
   return selectL({
@@ -111,6 +123,7 @@ const minutes = () =>
     de: () => "Minuten",
     en: () => "minutes",
   });
+
 export function timeFormat(time) {
   const timeInSeconds = time / 1000;
   const timeInMinutes = timeInSeconds / 60;

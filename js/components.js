@@ -119,7 +119,7 @@ export const galleryImagesList = ({ galleryImages }) =>
     galleryImages.map((photo) =>
       h("img", {
         src: photo,
-        class: "gallery-photo",
+        class: "gallery__photo",
         onclick: [DownloadPhoto, photo],
       })
     )
@@ -213,8 +213,8 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
           },
         },
         [
-          text("Hey, please press this button to allow the app to show you video."),
-          h("button", { class: "p-button", onclick: GotVideoPermission }, text("FixCamera")),
+          text(translator.pleaseAllowVideoPlayback()),
+          h("button", { class: "p-button", onclick: GotVideoPermission }, text(translator.allow())),
         ]
       ),
     ]
