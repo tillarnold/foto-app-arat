@@ -186,6 +186,12 @@ export const ExitGallery = (state) => ({
   path: CAMERA_PATH,
 });
 
+export const AddPhotoToGallery = (state, { photo, index }) => {
+  let newGalleryImages = [...state.galleryImages];
+  newGalleryImages[index] = photo;
+  return { ...state, galleryImages: newGalleryImages };
+};
+
 export const EnterShop = (state) => ({
   ...state,
   path: SHOP_PATH,
@@ -200,8 +206,11 @@ export const EnterMainGallery = (state) => [
   { ...state },
   [
     (dispatch) => {
-      db.loadAllDevelopedPhotos().then((photos) => {
-        dispatch(EnterGallery, photos);
+      db.loadDevelopedPhotoIds().then((photoIds) => {
+        dispatch(EnterGallery, new Array(photoIds.length));
+        photoIds.forEach((photoId, index) => {
+          db.loadPhoto(photoId).then((photo) => dispatch(AddPhotoToGallery, { index, photo }));
+        });
       });
     },
   ],
