@@ -50,7 +50,6 @@ export function hashPhoto(photo) {
 
 export function photoFileName(photo) {
   return hashPhoto(photo).then(
-    (hash) =>
-      hash.replace(/_/g, "").replace(/\//g, "").substring(3, 13) + ".png"
+    (hash) => hash.replace(/_/g, "").replace(/\//g, "").substring(3, 13) + ".png"
   );
 }

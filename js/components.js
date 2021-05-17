@@ -25,25 +25,18 @@ export const film_indicator = ({ activeFilm }) =>
     ...Array.from({ length: activeFilm.photos.length }, () =>
       h("div", { class: "photo-in-film-used" })
     ),
-    ...Array.from(
-      { length: activeFilm.frames - activeFilm.photos.length },
-      () => h("div", { class: "photo-in-film-free" })
+    ...Array.from({ length: activeFilm.frames - activeFilm.photos.length }, () =>
+      h("div", { class: "photo-in-film-free" })
     ),
   ]);
 
-export const film_lab = ({
-  filmsInDevelopment,
-  zeroDevelopmentTime,
-  currentTime,
-}) =>
+export const film_lab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }) =>
   h("div", { style: { marginTop: "1rem" } }, [
     text(translator.nrOfFilmsInLab(filmsInDevelopment.length)),
     h(
       "ul",
       { style: { paddingLeft: "1rem", lineHeight: "2", marginTop: "0.5rem" } },
-      filmsInDevelopment.map((film) =>
-        film_lab_item(film, zeroDevelopmentTime, currentTime)
-      )
+      filmsInDevelopment.map((film) => film_lab_item(film, zeroDevelopmentTime, currentTime))
     ),
   ]);
 
@@ -86,44 +79,28 @@ export const galleryImagesList = ({ galleryImages }) =>
 export const gallery = ({ galleryImages }) =>
   h("div", { class: "gallery" }, [
     h("p", {}, text(translator.gallery())),
-    h(
-      "button",
-      { class: "p-button", onclick: ExitGallery },
-      text(translator.back())
-    ),
+    h("button", { class: "p-button", onclick: ExitGallery }, text(translator.back())),
     galleryImagesList({ galleryImages }),
   ]);
 
 export const shop = (state) =>
-  h(
-    "div",
-    { class: "shop", style: { display: "flex", flexDirection: "column" } },
-    [
-      h("h1", {}, text(translator.shop())),
-      h("div", { style: { flex: 1 } }, [
-        h("label", { style: { display: "flex" } }, [
-          text(translator.instantDevelopmentMode()),
-          h("input", {
-            style: { marginLeft: "1rem" },
-            type: "checkbox",
-            checked: state.zeroDevelopmentTime,
-            onchange: ChangeZeroDevelopmentMode,
-          }),
-        ]),
-        debugView(state),
-        h(
-          "button",
-          { onclick: AskForVideoPermission, class: "p-button" },
-          text("popuptest")
-        ),
+  h("div", { class: "shop", style: { display: "flex", flexDirection: "column" } }, [
+    h("h1", {}, text(translator.shop())),
+    h("div", { style: { flex: 1 } }, [
+      h("label", { style: { display: "flex" } }, [
+        text(translator.instantDevelopmentMode()),
+        h("input", {
+          style: { marginLeft: "1rem" },
+          type: "checkbox",
+          checked: state.zeroDevelopmentTime,
+          onchange: ChangeZeroDevelopmentMode,
+        }),
       ]),
-      h(
-        "button",
-        { onclick: ExitShop, class: "p-button" },
-        text(translator.back())
-      ),
-    ]
-  );
+      debugView(state),
+      h("button", { onclick: AskForVideoPermission, class: "p-button" }, text("popuptest")),
+    ]),
+    h("button", { onclick: ExitShop, class: "p-button" }, text(translator.back())),
+  ]);
 
 export const debugView = ({ filmsInDevelopment, activeFilm }) =>
   h(
@@ -147,11 +124,7 @@ export const debugView = ({ filmsInDevelopment, activeFilm }) =>
         },
         text("Debug")
       ),
-      h(
-        "pre",
-        {},
-        text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))
-      ),
+      h("pre", {}, text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))),
     ]
   );
 
@@ -162,25 +135,14 @@ export const camera = (state) =>
       {
         class: "camera__top-panel",
       },
-      [
-        film_indicator(state),
-        h("button", { onclick: TakePhoto, class: "snap-button" }),
-      ]
+      [film_indicator(state), h("button", { onclick: TakePhoto, class: "snap-button" })]
     ),
     h("div", { class: "camera__bottom-panel" }, [
       h("div", { class: "camera__info-area" }, [film_lab(state)]),
 
       h("div", { class: "camera__button-bar" }, [
-        h(
-          "button",
-          { class: "p-button", onclick: EnterMainGallery },
-          text(translator.gallery())
-        ),
-        h(
-          "button",
-          { class: "p-button", onclick: EnterShop },
-          text(translator.shop())
-        ),
+        h("button", { class: "p-button", onclick: EnterMainGallery }, text(translator.gallery())),
+        h("button", { class: "p-button", onclick: EnterShop }, text(translator.shop())),
         h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
       ]),
     ]),
@@ -222,14 +184,8 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
           },
         },
         [
-          text(
-            "Hey, please press this button to allow the app to show you video."
-          ),
-          h(
-            "button",
-            { class: "p-button", onclick: GotVideoPermission },
-            text("FixCamera")
-          ),
+          text("Hey, please press this button to allow the app to show you video."),
+          h("button", { class: "p-button", onclick: GotVideoPermission }, text("FixCamera")),
         ]
       ),
     ]

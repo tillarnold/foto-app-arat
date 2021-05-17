@@ -14,9 +14,7 @@ export function PhotoCamera() {
       player.srcObject = stream;
       forcePlay();
     })
-    .catch((err) =>
-      console.error("An error occurred while getting the camera stream:", err)
-    );
+    .catch((err) => console.error("An error occurred while getting the camera stream:", err));
 
   player.addEventListener("canplay", adjustSize);
   window.addEventListener("resize", adjustSize);
@@ -75,9 +73,7 @@ export class AudioPlayer {
       this.cache = new Map();
       this.disabled = false;
     } else {
-      console.warn(
-        "This device does not support AudioContext. Audio playback was disabled."
-      );
+      console.warn("This device does not support AudioContext. Audio playback was disabled.");
     }
   }
 

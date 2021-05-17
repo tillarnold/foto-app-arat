@@ -71,15 +71,8 @@ export const nrOfFilmsInLab = (count) => {
   const single = count === 1;
   return selectL({
     de: () =>
-      `Momentan ${single ? "ist" : "sind"} ${count} Film${c(
-        !single,
-        "e"
-      )} in der Dunkelkammer`,
-    en: () =>
-      `There ${single ? "is" : "are"} currently ${count} film${c(
-        !single,
-        "s"
-      )} in the lab`,
+      `Momentan ${single ? "ist" : "sind"} ${count} Film${c(!single, "e")} in der Dunkelkammer`,
+    en: () => `There ${single ? "is" : "are"} currently ${count} film${c(!single, "s")} in the lab`,
   });
 };
 

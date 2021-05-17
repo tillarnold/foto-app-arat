@@ -19,8 +19,7 @@ function adjustViewfinderPosition() {
     window.getComputedStyle(document.querySelector("#viewfinder video")).width,
     10
   );
-  viewfinder.style.left =
-    (document.documentElement.clientWidth - videoWidth) / 2 + "px";
+  viewfinder.style.left = (document.documentElement.clientWidth - videoWidth) / 2 + "px";
 }
 
 function injectViewfinder() {
@@ -145,10 +144,7 @@ export const NewPhotoTaken = (state, film) => [
   film.photos.length >= film.frames && [
     (dispatch) => {
       db.addFilm().then((newFilmId) => {
-        Promise.all([
-          db.setActiveFilmId(newFilmId),
-          db.loadFilm(newFilmId),
-        ]).then(([, newFilm]) => {
+        Promise.all([db.setActiveFilmId(newFilmId), db.loadFilm(newFilmId)]).then(([, newFilm]) => {
           dispatch(NewFilmWasInserted, newFilm);
           db.addDevelopmentStartTimeStampToFilm(film.id, Date.now()).then(() =>
             db.loadAllFilmsInDevelopment().then((films) => {

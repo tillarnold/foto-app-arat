@@ -2,12 +2,7 @@ import { initdb, db } from "./persistence.js";
 import { h, app } from "./vendor/hyperapp-2.0.18.js";
 import { gallery, shop, camera, videoPermissionPopup } from "./components.js";
 import { UpdateTime } from "./actions.js";
-import {
-  CAMERA_PATH,
-  GALLERY_PATH,
-  SHOP_PATH,
-  CLICK_SOUND_FILE,
-} from "./constants.js";
+import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH, CLICK_SOUND_FILE } from "./constants.js";
 import { globalAudioPlayer } from "./media.js";
 
 const intervalSubscriber = (dispatch, { time, action }) => {
@@ -66,9 +61,7 @@ initdb(() => {
         ]);
       },
       node: document.getElementById("container"),
-      subscriptions: (state) => [
-        state.path === CAMERA_PATH && onInterval(10000, UpdateTime),
-      ],
+      subscriptions: (state) => [state.path === CAMERA_PATH && onInterval(10000, UpdateTime)],
     });
   });
 });

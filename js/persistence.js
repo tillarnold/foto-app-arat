@@ -1,3 +1,9 @@
+function resultPromise(v) {
+  return new Promise((resolve) => {
+    v.onsuccess = (e) => resolve(e.target.result);
+  });
+}
+
 export function PhotoDB(cb) {
   const DB_NAME = "Foto-App-Arat";
   const PHOTO_STORE = "photos";
@@ -30,154 +36,75 @@ export function PhotoDB(cb) {
 
   db_request.onsuccess = (event) => {
     const idb = event.target.result;
-    idb.onerror = (event) =>
-      console.error("[PhotoDB] Database error: ", event.target.errorCode);
+    idb.onerror = (event) => console.error("[PhotoDB] Database error: ", event.target.errorCode);
 
-    function getStore(name) {
-      return idb.transaction([name], "readwrite").objectStore(name);
+    const getStore = (name) => idb.transaction([name], "readwrite").objectStore(name);
+    const getPhotoStore = () => getStore(PHOTO_STORE);
+    const getFilmStore = () => getStore(FILM_STORE);
+    const getConfigStore = () => getStore(CONFIG_STORE);
+
+    const addPhoto = (photo) => resultPromise(getPhotoStore().add(photo));
+    const loadPhoto = (id) => resultPromise(getPhotoStore().get(id));
+
+    const addFilm = () => resultPromise(getFilmStore().add({ photos: [], frames: 8 }));
+    const loadFilm = (id) => resultPromise(getFilmStore().get(id));
+    const putFilm = (film) => resultPromise(getFilmStore().put(film));
+    const deleteFilm = (id) => resultPromise(getFilmStore().delete(id));
+    const loadAllFilms = () => resultPromise(getFilmStore().getAll());
+
+    const setConfig = (key, value) => resultPromise(getConfigStore().put(value, key));
+    const loadConfig = (key) => resultPromise(getConfigStore().get(key));
+    const setActiveFilmId = (id) => setConfig(ACTIVE_FILM_CONFIG_KEY, id);
+    const loadActiveFilmId = () => loadConfig(ACTIVE_FILM_CONFIG_KEY);
+    const loadActiveFilm = () => loadActiveFilmId().then(loadFilm);
+    const loadDevelopedPhotoIds = () => loadConfig(DEVELOPED_PHOTOS_CONFIG_KEY);
+
+    async function addDevelopedPhotos(new_photos) {
+      let photos = await loadDevelopedPhotoIds();
+      photos = photos.concat(new_photos);
+      return await setConfig(DEVELOPED_PHOTOS_CONFIG_KEY, photos);
     }
 
-    function getPhotoStore() {
-      return getStore(PHOTO_STORE);
-    }
-
-    function getFilmStore() {
-      return getStore(FILM_STORE);
-    }
-
-    function getConfigStore() {
-      return getStore(CONFIG_STORE);
-    }
-
-    function addPhoto(photo) {
-      return new Promise((resolve) => {
-        getPhotoStore().add(photo).onsuccess = (e) => resolve(e.target.result);
-      });
-    }
-
-    function loadPhoto(id) {
-      return new Promise((resolve) => {
-        getPhotoStore().get(id).onsuccess = (e) => resolve(e.target.result);
-      });
-    }
-
-    function addFilm() {
-      return new Promise((resolve) => {
-        getFilmStore().add({ photos: [], frames: 8 }).onsuccess = (e) =>
-          resolve(e.target.result);
-      });
-    }
-
-    function loadFilm(id) {
-      return new Promise((resolve) => {
-        getFilmStore().get(id).onsuccess = (e) => resolve(e.target.result);
-      });
-    }
-
-    function deleteFilm(id) {
-      return new Promise((resolve) => {
-        getFilmStore().delete(id).onsuccess = (e) => resolve(e.target.result);
-      });
-    }
-
-    function setConfig(key, value) {
-      return new Promise((resolve) => {
-        getConfigStore().put(value, key).onsuccess = (e) =>
-          resolve(e.target.result);
-      });
-    }
-
-    function loadConfig(key) {
-      return new Promise((resolve) => {
-        getConfigStore().get(key).onsuccess = (e) => resolve(e.target.result);
-      });
-    }
-
-    function setActiveFilmId(id) {
-      return setConfig(ACTIVE_FILM_CONFIG_KEY, id);
-    }
-
-    function loadActiveFilmId() {
-      return loadConfig(ACTIVE_FILM_CONFIG_KEY);
-    }
-
-    function loadActiveFilm() {
-      return loadActiveFilmId().then(loadFilm);
-    }
-
-    function loadDevelopedPhotoIds() {
-      return loadConfig(DEVELOPED_PHOTOS_CONFIG_KEY);
-    }
-
-    function addDevelopedPhotos(new_photos) {
-      return loadDevelopedPhotoIds().then((photos) => {
-        photos = photos.concat(new_photos);
-        return setConfig(DEVELOPED_PHOTOS_CONFIG_KEY, photos);
-      });
-    }
-
-    function loadAllDevelopedPhotos() {
-      return loadDevelopedPhotoIds().then((photos) =>
-        Promise.all(photos.map(loadPhoto))
-      );
+    async function loadAllDevelopedPhotos() {
+      const photos = await loadDevelopedPhotoIds();
+      return await Promise.all(photos.map(loadPhoto));
     }
 
     /// Add the given photo to the film with the provided id
     /// resolves to the new film
-    function addPhotoToFilm(filmId, photo) {
-      return new Promise((resolve) => {
-        Promise.all([addPhoto(photo), loadFilm(filmId)]).then(
-          ([photoId, film]) => {
-            film.photos.push(photoId);
-            getFilmStore().put(film).onsuccess = () => {
-              resolve(film);
-            };
-          }
-        );
-      });
+    async function addPhotoToFilm(filmId, photo) {
+      const [photoId, film] = await Promise.all([addPhoto(photo), loadFilm(filmId)]);
+      film.photos.push(photoId);
+      await putFilm(film);
+      return film;
     }
 
-    function addPhotoToActiveFilm(photo) {
-      return loadActiveFilmId().then((filmId) => addPhotoToFilm(filmId, photo));
+    async function addPhotoToActiveFilm(photo) {
+      const filmId = await loadActiveFilmId();
+      return await addPhotoToFilm(filmId, photo);
     }
 
     // Takes the photos of the given film and adds them to the list of developed photos
     // This also removes that film and return the film
-    function developFilm(filmId) {
-      return loadFilm(filmId).then((film) =>
-        Promise.all([addDevelopedPhotos(film.photos), deleteFilm(filmId)]).then(
-          () => film
-        )
-      );
+    async function developFilm(filmId) {
+      const film = await loadFilm(filmId);
+      await Promise.all([addDevelopedPhotos(film.photos), deleteFilm(filmId)]);
+      return film;
     }
 
-    function loadAllFilms() {
-      return new Promise((resolve) => {
-        getFilmStore().getAll().onsuccess = (e) => resolve(e.target.result);
-      });
+    async function loadAllFilmsInDevelopment() {
+      const [activeFilmId, allFilms] = await Promise.all([loadActiveFilmId(), loadAllFilms()]);
+      const activeIndex = allFilms.findIndex((film) => film.id === activeFilmId);
+      if (activeIndex !== -1) {
+        allFilms.splice(activeIndex, 1);
+      }
+      return allFilms;
     }
 
-    function loadAllFilmsInDevelopment() {
-      return Promise.all([loadActiveFilmId(), loadAllFilms()]).then(
-        ([activeFilmId, allFilms]) => {
-          const activeIndex = allFilms.findIndex(
-            (film) => film.id === activeFilmId
-          );
-          if (activeIndex !== -1) {
-            allFilms.splice(activeIndex, 1);
-          }
-          return allFilms;
-        }
-      );
-    }
-
-    function addDevelopmentStartTimeStampToFilm(filmId, timestamp) {
-      return new Promise((resolve) => {
-        loadFilm(filmId).then((film) => {
-          film.developmentStartDate = timestamp;
-          getFilmStore().put(film).onsuccess = (e) => resolve(e.target.result);
-        });
-      });
+    async function addDevelopmentStartTimeStampToFilm(filmId, timestamp) {
+      const film = await loadFilm(filmId);
+      film.developmentStartDate = timestamp;
+      return await putFilm(film);
     }
 
     function deleteDatabase() {
