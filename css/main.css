@@ -53,6 +53,7 @@ body {
 #container {
   background: whitesmoke;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   overflow-y: hidden;
 }
 
@@ -75,6 +76,7 @@ body {
 .gallery {
   width: 100vw;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 .shop {
@@ -97,12 +99,14 @@ body {
 
 .camera__top-panel {
   height: 30vh;
+  height: calc(var(--vh, 1vh) * 30);
   background: silver;
   display: flex;
 }
 
 .camera__bottom-panel {
   height: 70vh;
+  height: calc(var(--vh, 1vh) * 70);
   background: gray;
   background: radial-gradient(black 15%, transparent 16%) 0 0,
     radial-gradient(black 15%, transparent 16%) 8px 8px,

@@ -5,6 +5,11 @@ import { UpdateTime } from "./actions.js";
 import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH, CLICK_SOUND_FILE } from "./constants.js";
 import { globalAudioPlayer } from "./media.js";
 
+window.addEventListener("resize", () => {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty("--vh", vh + "px");
+});
+
 const intervalSubscriber = (dispatch, { time, action }) => {
   let handle = setInterval(() => {
     dispatch(action);
