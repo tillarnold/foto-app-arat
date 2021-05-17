@@ -5,10 +5,13 @@ import { UpdateTime } from "./actions.js";
 import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH, CLICK_SOUND_FILE } from "./constants.js";
 import { globalAudioPlayer } from "./media.js";
 
-window.addEventListener("resize", () => {
+function updateVhCssVariable() {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty("--vh", vh + "px");
-});
+}
+
+window.addEventListener("resize", updateVhCssVariable);
+updateVhCssVariable();
 
 const intervalSubscriber = (dispatch, { time, action }) => {
   let handle = setInterval(() => {
@@ -44,7 +47,7 @@ initdb(() => {
             {
               class: "camera-and-shop",
               style: {
-                marginTop: state.path === GALLERY_PATH ? "-100vh" : "0",
+                marginTop: state.path === GALLERY_PATH ? "calc(var(--vh, 1vh) * -100)" : "0",
                 marginLeft: state.path === SHOP_PATH ? "-100vw" : "0",
                 position: "relative",
               },

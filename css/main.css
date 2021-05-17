@@ -8,7 +8,7 @@
 }
 
 body {
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   width: 100vw;
   overflow: hidden;
 }
@@ -52,7 +52,6 @@ body {
 
 #container {
   background: whitesmoke;
-  height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
   overflow-y: hidden;
 }
@@ -75,7 +74,6 @@ body {
 .shop,
 .gallery {
   width: 100vw;
-  height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
 }
 
@@ -98,14 +96,12 @@ body {
 }
 
 .camera__top-panel {
-  height: 30vh;
   height: calc(var(--vh, 1vh) * 30);
   background: silver;
   display: flex;
 }
 
 .camera__bottom-panel {
-  height: 70vh;
   height: calc(var(--vh, 1vh) * 70);
   background: gray;
   background: radial-gradient(black 15%, transparent 16%) 0 0,
