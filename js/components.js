@@ -104,7 +104,7 @@ export const filmLabItem = (film, zeroDevelopmentTime, currentTime) => {
           "button",
           {
             onclick: [DevelopedFilmWasCollected, film.id],
-            class: "pickup-button",
+            class: "p-button",
           },
           text(translator.readyForPickup())
         )
@@ -115,7 +115,7 @@ export const filmLabItem = (film, zeroDevelopmentTime, currentTime) => {
 export const galleryImagesList = ({ galleryImages }) =>
   h(
     "div",
-    {},
+    { class: "p-card", style: { marginBottom: "1rem" } },
     galleryImages.map((photo) =>
       h("img", {
         src: photo,
@@ -127,13 +127,15 @@ export const galleryImagesList = ({ galleryImages }) =>
 
 export const gallery = ({ galleryImages }) =>
   h("div", { class: "gallery" }, [
-    h("p", {}, text(translator.gallery())),
-    h("button", { class: "p-button", onclick: ExitGallery }, text(translator.back())),
+    h("div", { class: "p-card flex-row", style: { alignItems: "center", marginBottom: "1rem" } }, [
+      h("h3", { style: { flex: 1 } }, text(translator.gallery())),
+      h("button", { class: "p-button", onclick: ExitGallery }, text(translator.back())),
+    ]),
     galleryImagesList({ galleryImages }),
   ]);
 
 export const shop = (state) =>
-  h("div", { class: "shop", style: { display: "flex", flexDirection: "column" } }, [
+  h("div", { class: "shop flex-column" }, [
     h("h1", {}, text(translator.shop())),
     h("div", { style: { flex: 1 } }, [
       h("label", { style: { display: "flex" } }, [
@@ -155,11 +157,8 @@ export const debugView = ({ filmsInDevelopment, activeFilm }) =>
   h(
     "details",
     {
-      style: {
-        border: "1px solid #aaa",
-        borderRadius: "4px",
-        padding: ".5em .5em 0",
-      },
+      class: "p-card",
+      style: { margin: "1rem 0" },
     },
     [
       h(
@@ -167,8 +166,6 @@ export const debugView = ({ filmsInDevelopment, activeFilm }) =>
         {
           style: {
             fontWeight: "bold",
-            margin: "-.5em -.5em 0",
-            padding: ".5em",
           },
         },
         text("Debug")
@@ -181,16 +178,15 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
   h(
     "div",
     {
+      class: "flex-column",
       style: {
         position: "absolute",
         top: 0,
         left: 0,
         width: "100vw",
-        height: "100vh",
-        display: "flex",
+        height: "calc(var(--vh, 1vh) * 100)",
         alignItems: "center",
         justifyContent: "center",
-        flexDirection: "column",
         background: showVideoPermissionPopup ? "rgba(0.3,0.3,0.3,0.6)" : "transparent",
         transition: "0.3s",
         pointerEvents: showVideoPermissionPopup ? "auto" : "none",
@@ -200,14 +196,9 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
       h(
         "div",
         {
+          class: "p-card flex-column",
           style: {
-            background: "white",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            padding: "1rem",
-            borderRadius: "3px",
+            padding: "2rem",
             marginTop: showVideoPermissionPopup ? 0 : "-200vh",
             transform: "scale(" + (showVideoPermissionPopup ? "1" : "0.3") + ")",
             "--movingTime": "0.3s",
@@ -215,12 +206,15 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
             transition: showVideoPermissionPopup
               ? "margin var(--movingTime) 0s, transform var(--transformingTime) var(--movingTime)"
               : "margin var(--movingTime) var(--transformingTime), transform var(--transformingTime) 0s",
-            boxShadow: "2px 2px 5px 0px rgba(0,0,0,0.2)",
           },
         },
         [
-          text(translator.pleaseAllowVideoPlayback()),
-          h("button", { class: "p-button", onclick: GotVideoPermission }, text(translator.allow())),
+          h("p", { style: { paddingBottom: "2rem" } }, text(translator.pleaseAllowVideoPlayback())),
+          h(
+            "button",
+            { class: "p-button primary", onclick: GotVideoPermission },
+            text(translator.allow())
+          ),
         ]
       ),
     ]
