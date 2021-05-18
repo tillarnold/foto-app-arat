@@ -3,7 +3,7 @@ import { db } from "./persistence.js";
 import { download, photoFileName } from "./utils.js";
 import * as translator from "./translator.js";
 import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH, CLICK_SOUND_FILE } from "./constants.js";
-import { camera } from "./dom.js";
+import { camera, closeAndOpenShutter } from "./dom.js";
 
 export const AskForVideoPermission = (state) => ({
   ...state,
@@ -29,6 +29,7 @@ export const TakePhoto = (state) => [
       }
 
       const pic = camera.snap();
+      closeAndOpenShutter();
       globalAudioPlayer.play(CLICK_SOUND_FILE);
       db.addPhotoToActiveFilm(pic).then((film) => {
         dispatch(NewPhotoTaken, film);
