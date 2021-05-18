@@ -2,7 +2,7 @@ import { PhotoCamera } from "./media.js";
 
 export const camera = PhotoCamera();
 
-const SHUTTER_SPEED = 0.08;
+const SHUTTER_SPEED = 0.15;
 const CLOSED_SHUTTER_TIME = 0.2;
 const leftShutter = creatShutter();
 leftShutter.style.left = "0";
