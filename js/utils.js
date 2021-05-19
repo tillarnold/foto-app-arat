@@ -35,6 +35,10 @@ function toBinary(string) {
   return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
 }
 
+/**
+ *
+ * @param {ArrayBuffer} arrayBuffer
+ */
 function arrayBufferToBase64(arrayBuffer) {
   const decoder = new TextDecoder("utf8");
   const decoded = decoder.decode(arrayBuffer);
@@ -43,7 +47,7 @@ function arrayBufferToBase64(arrayBuffer) {
 }
 
 export function hashPhoto(photo) {
-  const enc = new TextEncoder(); // always utf-8
+  const enc = new TextEncoder();
   const array = enc.encode(photo);
   return crypto.subtle.digest("SHA-1", array).then(arrayBufferToBase64);
 }
@@ -61,7 +65,9 @@ export function photoFileName(photo) {
 export async function photoToFile(photo) {
   const res = await fetch(photo);
   const buffer = await res.arrayBuffer();
-  const fileName = await photoFileName(photo); //TODO this is not effictient
+  const hash = await crypto.subtle.digest("SHA-1", buffer);
+  const hashString = arrayBufferToBase64(hash);
+  const fileName = hashString.replace(/_/g, "").replace(/\//g, "").substring(3, 13) + ".png";
 
   const file = new File([buffer], fileName, {
     type: "image/png",
@@ -69,6 +75,10 @@ export async function photoToFile(photo) {
   return file;
 }
 
+/**
+ *
+ * @param {string[]} photos
+ */
 export async function shareDownload(photos) {
   const files = await Promise.all(photos.map(photoToFile));
   const shareData = { files };

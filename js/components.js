@@ -130,7 +130,10 @@ export const gallery = ({ galleryImages }) =>
   h("div", { class: "gallery" }, [
     h("div", { class: "p-card flex-row", style: { alignItems: "center", marginBottom: "1rem" } }, [
       h("h3", { style: { flex: 1 } }, text(translator.gallery())),
-      h("button", { class: "p-button", onclick: DownloadGallery }, text(translator.downloadAll())),
+      h("button", { class: "p-button", onclick: DownloadGallery }, [
+        text(translator.downloadAll()),
+        h("div", { class: "p-spinner" }),
+      ]),
       h("button", { class: "p-button", onclick: ExitGallery }, text(translator.back())),
     ]),
     galleryImagesList({ galleryImages }),
