@@ -151,7 +151,7 @@ export function timeFormat(time) {
     return res + " " + (res === 1 ? minute() : minutes());
   }
 
-  selectL({
+  return selectL({
     de: () => "weniger als einer Minute",
     en: () => "under a minute",
   });

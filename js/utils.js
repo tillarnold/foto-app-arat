@@ -80,6 +80,11 @@ export async function photoToFile(photo) {
  * @param {string[]} photos
  */
 export async function shareDownload(photos) {
+  if (!("share" in window.navigator)) {
+    //TODO: polyfill this?
+    return Promise.resolve(new Error("navigator.share not supported"));
+  }
+
   const files = await Promise.all(photos.map(photoToFile));
   const shareData = { files };
   return await navigator.share(shareData);

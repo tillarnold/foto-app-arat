@@ -36,6 +36,7 @@ async function initApp() {
       currentTime: Date.now(),
       zeroDevelopmentTime: false,
       showVideoPermissionPopup: false,
+      galleryDownloadInProgress: false,
     },
     view: (state) => {
       console.log("State before render is", state);

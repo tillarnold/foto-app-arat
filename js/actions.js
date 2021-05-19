@@ -163,12 +163,17 @@ export const EnterMainGallery = (state) => [
   ],
 ];
 
-export const DownloadGallery = (state) => [
-  { ...state },
+export const DownloadGalleryDone = (state) => ({
+  ...state,
+  galleryDownloadInProgress: false,
+});
+
+export const StartDownloadGallery = (state) => [
+  { ...state, galleryDownloadInProgress: true },
   [
     (dispatch) => {
       db.loadAllDevelopedPhotos().then((photos) => {
-        shareDownload(photos);
+        shareDownload(photos).then(() => dispatch(DownloadGalleryDone));
       });
     },
   ],
