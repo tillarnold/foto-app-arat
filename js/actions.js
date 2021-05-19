@@ -1,6 +1,6 @@
 import { globalAudioPlayer } from "./media.js";
 import { db } from "./persistence.js";
-import { download, photoFileName } from "./utils.js";
+import { download, photoFileName, shareDownload } from "./utils.js";
 import * as translator from "./translator.js";
 import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH, CLICK_SOUND_FILE } from "./constants.js";
 import { camera, closeAndOpenShutter } from "./dom.js";
@@ -158,6 +158,17 @@ export const EnterMainGallery = (state) => [
         photoIds.forEach((photoId, index) => {
           db.loadPhoto(photoId).then((photo) => dispatch(AddPhotoToGallery, { index, photo }));
         });
+      });
+    },
+  ],
+];
+
+export const DownloadGallery = (state) => [
+  { ...state },
+  [
+    (dispatch) => {
+      db.loadAllDevelopedPhotos().then((photos) => {
+        shareDownload(photos);
       });
     },
   ],

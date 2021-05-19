@@ -53,3 +53,24 @@ export function photoFileName(photo) {
     (hash) => hash.replace(/_/g, "").replace(/\//g, "").substring(3, 13) + ".png"
   );
 }
+
+/**
+ * Converts the given photo dataurl to a File object
+ * @param {string} photo
+ */
+export async function photoToFile(photo) {
+  const res = await fetch(photo);
+  const buffer = await res.arrayBuffer();
+  const fileName = await photoFileName(photo); //TODO this is not effictient
+
+  const file = new File([buffer], fileName, {
+    type: "image/png",
+  });
+  return file;
+}
+
+export async function shareDownload(photos) {
+  const files = await Promise.all(photos.map(photoToFile));
+  const shareData = { files };
+  return await navigator.share(shareData);
+}

@@ -11,6 +11,7 @@ import {
   ChangeZeroDevelopmentMode,
   GotVideoPermission,
   AskForVideoPermission,
+  DownloadGallery,
 } from "./actions.js";
 import * as translator from "./translator.js";
 import { GALLERY_PATH, SHOP_PATH } from "./constants.js";
@@ -129,6 +130,7 @@ export const gallery = ({ galleryImages }) =>
   h("div", { class: "gallery" }, [
     h("div", { class: "p-card flex-row", style: { alignItems: "center", marginBottom: "1rem" } }, [
       h("h3", { style: { flex: 1 } }, text(translator.gallery())),
+      h("button", { class: "p-button", onclick: DownloadGallery }, text(translator.downloadAll())),
       h("button", { class: "p-button", onclick: ExitGallery }, text(translator.back())),
     ]),
     galleryImagesList({ galleryImages }),

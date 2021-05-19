@@ -61,6 +61,12 @@ export const back = () =>
     en: () => "Back",
   });
 
+export const downloadAll = () =>
+  selectL({
+    de: () => "Herunterladen",
+    en: () => "Download",
+  });
+
 export const instantDevelopmentMode = () =>
   selectL({
     de: () => "Sofortbildmodus",
