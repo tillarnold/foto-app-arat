@@ -111,7 +111,7 @@ body {
 
 .p-spinner {
   display: inline-flex;
-  height: 1em;
+  height: 0.5em;
   width: 1em;
   margin: 0.15em;
   justify-content: center;
