@@ -36,27 +36,25 @@ export function PhotoCamera() {
   player.addEventListener("canplay", adjustSize);
   window.addEventListener("resize", adjustSize);
 
-  function adjustSize() {
+  function adjustSize(): void {
     canvas.width = player.videoWidth;
     canvas.height = player.videoHeight;
   }
 
   /**
    * Takes a photo
-   *
-   * @returns {string} A picture as a DataUrl
    */
-  function snap() {
+  function snap(): string {
     adjustSize();
     ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
     return canvas.toDataURL("image/png");
   }
 
-  function getVideoElement() {
+  function getVideoElement(): HTMLVideoElement {
     return player;
   }
 
-  function forcePlay() {
+  function forcePlay(): Promise<any> {
     return player
       .play()
       .catch((e) => {
@@ -87,54 +85,50 @@ export function fetchAudio(url: string, ctx: AudioContext) {
   return fetchArrayBuffer(url).then((buffer) => ctx.decodeAudioData(buffer));
 }
 
+delete window.AudioContext;
+
 export class AudioPlayer {
-  disabled: boolean;
-  audioContext: AudioContext;
-  cache: Map<string, any>;
+  readonly disabled: boolean;
+  private audioContext: AudioContext;
+  private cache: Map<string, AudioBuffer>;
 
   constructor() {
     this.disabled = !("AudioContext" in window);
     if (!this.disabled) {
       this.audioContext = new AudioContext();
       this.cache = new Map();
-      this.disabled = false;
     } else {
       console.warn("This device does not support AudioContext. Audio playback was disabled.");
     }
   }
 
-  load(url: string): Promise<any> {
+  async load(url: string): Promise<AudioBuffer | Error> {
     if (this.disabled) {
-      return Promise.resolve(new Error("AudioContext not supported"));
+      return new Error("AudioContext not supported");
     }
-    return fetchAudio(url, this.audioContext).then((result) => {
-      this.cache.set(url, result);
-      return result;
-    });
+    const result = await fetchAudio(url, this.audioContext);
+    this.cache.set(url, result);
+    return result;
   }
 
   /// Returns the audio buffer at that url or an empty buffer if it is not loaded yet
-  get(url) {
-    if (this.disabled) {
-      return Promise.resolve(new Error("AudioContext not supported"));
-    }
+  private get(url: string) {
     if (this.cache.has(url)) {
       return this.cache.get(url);
-    } else {
-      this.load(url);
-      console.warn("[AudioPlayer] tried to play non-loaded sound");
-      return this.audioContext.createBuffer(2, 22050, 44100);
     }
+    this.load(url);
+    console.warn("[AudioPlayer] tried to play non-loaded sound");
+    return this.audioContext.createBuffer(2, 22050, 44100);
   }
 
-  private getAudioBufferSourceNode(url) {
+  private getAudioBufferSourceNode(url: string): AudioBufferSourceNode {
     const source = this.audioContext.createBufferSource();
     source.buffer = this.get(url);
     source.connect(this.audioContext.destination);
     return source;
   }
 
-  play(url) {
+  play(url: string): AudioBufferSourceNode | Error {
     if (this.disabled) {
       return new Error("AudioContext not supported");
     }
@@ -143,7 +137,7 @@ export class AudioPlayer {
     return source;
   }
 
-  loop(url) {
+  loop(url: string): AudioBufferSourceNode | Error {
     if (this.disabled) {
       return new Error("AudioContext not supported");
     }

@@ -1,4 +1,4 @@
-export function indexIntoObject(path, root) {
+export function indexIntoObject(path: string[], root: any): any {
   let obj = root;
   for (let el of path) {
     obj = obj[el];
@@ -6,19 +6,15 @@ export function indexIntoObject(path, root) {
   return obj;
 }
 
-export function timeStamp() {
-  return Date.now();
-}
-
 export function jsonclone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export function repeat(count, value) {
+export function repeat<T>(count: number, value: T): T[] {
   return Array(count).fill(value);
 }
 
-export function download(href, name = "img.png") {
+export function download(href: string, name = "img.png"): void {
   const a = document.createElement("a");
   a.href = href;
   a.download = name;
@@ -27,7 +23,7 @@ export function download(href, name = "img.png") {
   document.body.removeChild(a);
 }
 
-function toBinary(string) {
+function toBinary(string: string): string {
   const codeUnits = new Uint16Array(string.length);
   for (let i = 0; i < codeUnits.length; i++) {
     codeUnits[i] = string.charCodeAt(i);
@@ -35,24 +31,20 @@ function toBinary(string) {
   return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
 }
 
-/**
- *
- * @param {ArrayBuffer} arrayBuffer
- */
-function arrayBufferToBase64(arrayBuffer) {
+function arrayBufferToBase64(arrayBuffer: ArrayBuffer): string {
   const decoder = new TextDecoder("utf8");
   const decoded = decoder.decode(arrayBuffer);
   const binaryString = toBinary(decoded);
   return btoa(binaryString);
 }
 
-export function hashPhoto(photo) {
+export function hashPhoto(photo: string): Promise<string> {
   const enc = new TextEncoder();
   const array = enc.encode(photo);
   return crypto.subtle.digest("SHA-1", array).then(arrayBufferToBase64);
 }
 
-export function photoFileName(photo) {
+export function photoFileName(photo: string): Promise<string> {
   return hashPhoto(photo).then(
     (hash) => hash.replace(/_/g, "").replace(/\//g, "").substring(3, 13) + ".png"
   );
@@ -60,9 +52,8 @@ export function photoFileName(photo) {
 
 /**
  * Converts the given photo dataurl to a File object
- * @param {string} photo
  */
-export async function photoToFile(photo) {
+export async function photoToFile(photo: string): Promise<File> {
   const res = await fetch(photo);
   const buffer = await res.arrayBuffer();
   const hash = await crypto.subtle.digest("SHA-1", buffer);
@@ -75,11 +66,7 @@ export async function photoToFile(photo) {
   return file;
 }
 
-/**
- *
- * @param {string[]} photos
- */
-export async function shareDownload(photos) {
+export async function shareDownload(photos: string[]) {
   if (!("share" in window.navigator)) {
     //TODO: polyfill this?
     return Promise.resolve(new Error("navigator.share not supported"));

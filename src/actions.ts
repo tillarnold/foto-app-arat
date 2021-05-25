@@ -1,9 +1,9 @@
-import { globalAudioPlayer } from "./media.js";
-import { db, Film, Photo } from "./persistence.js";
-import { download, photoFileName, shareDownload } from "./utils.js";
-import * as translator from "./translator.js";
-import { CLICK_SOUND_FILE } from "./constants.js";
-import { camera, closeAndOpenShutter } from "./dom.js";
+import { globalAudioPlayer } from "./media";
+import { db, Film, Photo } from "./persistence";
+import { download, photoFileName, shareDownload } from "./utils";
+import * as translator from "./translator";
+import { CLICK_SOUND_FILE } from "./constants";
+import { camera, closeAndOpenShutter } from "./dom";
 import { Path, State } from "./types.js";
 import { Dispatchable } from "hyperapp";
 

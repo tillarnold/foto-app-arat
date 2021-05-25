@@ -1,4 +1,4 @@
-function getLangaugePreferences() {
+function getLangaugePreferences(): string[] {
   const languages = [];
 
   const languageOverride = window.localStorage.languageOverride;
@@ -18,7 +18,7 @@ const languagePrefs = getLangaugePreferences();
 
 console.log({ languagePrefs });
 
-function selectL(desc) {
+function selectL(desc: { [key: string]: () => string }): string {
   for (const lang of languagePrefs) {
     let selection = desc[lang];
     if (selection) {
@@ -29,63 +29,63 @@ function selectL(desc) {
   return "???";
 }
 
-const c = (cond, text) => (cond ? text : "");
+const c = (cond: boolean, text: string) => (cond ? text : "");
 
-export const deleteDatabaseConfirmation = () =>
+export const deleteDatabaseConfirmation = (): string =>
   selectL({
     de: () => "Sind Sie sicher, dass Sie alle Daten löschen wollen?",
     en: () => "Are you sure you want to delete all data?",
   });
 
-export const gallery = () =>
+export const gallery = (): string =>
   selectL({
     de: () => "Galerie",
     en: () => "Gallery",
   });
 
-export const shop = () =>
+export const shop = (): string =>
   selectL({
     de: () => "Fotoladen",
     en: () => "Shop",
   });
 
-export const readyForPickup = () =>
+export const readyForPickup = (): string =>
   selectL({
     de: () => "Abhohlbereit!",
     en: () => "Ready for pickup!",
   });
 
-export const back = () =>
+export const back = (): string =>
   selectL({
     de: () => "Zurück",
     en: () => "Back",
   });
 
-export const downloadAll = () =>
+export const downloadAll = (): string =>
   selectL({
     de: () => "Herunterladen",
     en: () => "Download",
   });
 
-export const instantDevelopmentMode = () =>
+export const instantDevelopmentMode = (): string =>
   selectL({
     de: () => "Sofortbildmodus",
     en: () => "Instant camera mode",
   });
 
-export const pleaseAllowVideoPlayback = () =>
+export const pleaseAllowVideoPlayback = (): string =>
   selectL({
     de: () => "Hey, bitte dücke diesen Knopf um der App zu erlauben Video darzustellen.",
     en: () => "Hey, please press this button to allow the app to show you video.",
   });
 
-export const allow = () =>
+export const allow = (): string =>
   selectL({
     de: () => "Erlauben",
     en: () => "Allow",
   });
 
-export const nrOfFilmsInLab = (count) => {
+export const nrOfFilmsInLab = (count: number): string => {
   const single = count === 1;
   return selectL({
     de: () =>
@@ -94,43 +94,43 @@ export const nrOfFilmsInLab = (count) => {
   });
 };
 
-const day = () =>
+const day = (): string =>
   selectL({
     de: () => "Tag",
     en: () => "day",
   });
 
-const days = () =>
+const days = (): string =>
   selectL({
     de: () => "Tagen",
     en: () => "days",
   });
 
-const hour = () =>
+const hour = (): string =>
   selectL({
     de: () => "Stunde",
     en: () => "hour",
   });
 
-const hours = () =>
+const hours = (): string =>
   selectL({
     de: () => "Stunden",
     en: () => "hours",
   });
 
-const minute = () =>
+const minute = (): string =>
   selectL({
     de: () => "Minute",
     en: () => "minute",
   });
 
-const minutes = () =>
+const minutes = (): string =>
   selectL({
     de: () => "Minuten",
     en: () => "minutes",
   });
 
-export function timeFormat(time) {
+export function timeFormat(time: number): string {
   const timeInSeconds = time / 1000;
   const timeInMinutes = timeInSeconds / 60;
   const timeInHours = timeInMinutes / 60;
@@ -157,7 +157,7 @@ export function timeFormat(time) {
   });
 }
 
-export const filmReadyIn = (time) =>
+export const filmReadyIn = (time: number): string =>
   selectL({
     de: () => `Abholbereit in ${timeFormat(time)}`,
     en: () => `The film will be ready in ${timeFormat(time)}`,

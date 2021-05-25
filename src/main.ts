@@ -28,7 +28,6 @@ const onInterval = (time: number, action: Action<State>): Subscription<State, In
 
 async function initApp() {
   await initdb();
-  // window.pdb = db; //TODO: remove
 
   const [initialActiveFilm, initialFilmsInDevelopment]: [Film, Film[], any] = await Promise.all([
     db.loadActiveFilm(),
@@ -52,7 +51,7 @@ async function initApp() {
       return rootComponent(state);
     },
     node: document.getElementById("container"),
-    subscriptions: (state) => (state.path === Path.Camera ? [onInterval(10000, UpdateTime)] : []),
+    subscriptions: (state) => [state.path === Path.Camera && onInterval(10000, UpdateTime)],
   });
 }
 

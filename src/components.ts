@@ -13,6 +13,7 @@ import {
   AskForVideoPermission,
   StartDownloadGallery,
 } from "./actions";
+import { Film, Photo } from "./persistence";
 import * as translator from "./translator";
 import { Path, State } from "./types";
 
@@ -80,7 +81,11 @@ export const filmIndicator = ({ activeFilm }): VNode<any> =>
     ),
   ]);
 
-export const filmLab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }): VNode<State> =>
+export const filmLab = ({
+  filmsInDevelopment,
+  zeroDevelopmentTime,
+  currentTime,
+}: State): VNode<State> =>
   h("div", { style: { marginTop: "1rem" } }, [
     text(translator.nrOfFilmsInLab(filmsInDevelopment.length)),
     h(
@@ -90,7 +95,11 @@ export const filmLab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }
     ),
   ]);
 
-export const filmLabItem = (film, zeroDevelopmentTime, currentTime): VNode<State> => {
+export const filmLabItem = (
+  film: Film,
+  zeroDevelopmentTime: boolean,
+  currentTime: number
+): VNode<State> => {
   const timeInDevelopment = currentTime - film.developmentStartDate;
   const timeLeft = DEVELOPMENT_TIME - timeInDevelopment;
   let isDone = timeLeft <= 0;
@@ -113,7 +122,7 @@ export const filmLabItem = (film, zeroDevelopmentTime, currentTime): VNode<State
   ]);
 };
 
-export const galleryImagesList = ({ galleryImages }): VNode<State> =>
+export const galleryImagesList = ({ galleryImages }: { galleryImages: Photo[] }): VNode<State> =>
   h(
     "div",
     { class: "p-card", style: { marginBottom: "1rem" } },
@@ -126,7 +135,7 @@ export const galleryImagesList = ({ galleryImages }): VNode<State> =>
     )
   );
 
-export const gallery = ({ galleryImages, galleryDownloadInProgress }): VNode<State> =>
+export const gallery = ({ galleryImages, galleryDownloadInProgress }: State): VNode<State> =>
   h("div", { class: "gallery" }, [
     h("div", { class: "p-card flex-row", style: { alignItems: "center", marginBottom: "1rem" } }, [
       h("h3", { style: { flex: "1" } }, [text(translator.gallery())]),
@@ -158,7 +167,13 @@ export const shop = (state: State): VNode<State> =>
     h("button", { onclick: ExitShop, class: "p-button" }, [text(translator.back())]),
   ]);
 
-export const debugView = ({ filmsInDevelopment, activeFilm }): VNode<State> =>
+export const debugView = ({
+  filmsInDevelopment,
+  activeFilm,
+}: {
+  filmsInDevelopment: Film[];
+  activeFilm: Film;
+}): VNode<State> =>
   h(
     "details",
     {
@@ -179,7 +194,7 @@ export const debugView = ({ filmsInDevelopment, activeFilm }): VNode<State> =>
     ]
   );
 
-export const videoPermissionPopup = (showVideoPermissionPopup): VNode<State> =>
+export const videoPermissionPopup = (showVideoPermissionPopup: boolean): VNode<State> =>
   h(
     "div",
     {
