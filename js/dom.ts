@@ -1,4 +1,4 @@
-import { PhotoCamera } from "./media.js";
+import { PhotoCamera } from "./media";
 
 export const camera = PhotoCamera();
 

@@ -1,4 +1,4 @@
-import { h, text } from "./vendor/hyperapp-2.0.18.js";
+import { h, StyleProp, text, VNode } from "hyperapp";
 import {
   DevelopedFilmWasCollected,
   ExitGallery,
@@ -15,6 +15,7 @@ import {
 } from "./actions.js";
 import * as translator from "./translator.js";
 import { GALLERY_PATH, SHOP_PATH } from "./constants.js";
+import { State } from "./types.js";
 
 const SECONDS = 1000;
 const MINUTES = 60 * SECONDS;
@@ -22,7 +23,7 @@ const HOURS = 60 * MINUTES;
 
 const DEVELOPMENT_TIME = 0.5 * HOURS;
 
-export const rootComponent = (state) =>
+export const rootComponent = (state: State): VNode<State> =>
   h("main", { style: { overflow: "hidden" } }, [
     h(
       "div",
@@ -50,7 +51,7 @@ export const rootComponent = (state) =>
     videoPermissionPopup(state.showVideoPermissionPopup),
   ]);
 
-export const camera = (state) =>
+export const camera = (state: State): VNode<State> =>
   h("div", { class: "camera" }, [
     h(
       "div",
@@ -63,14 +64,14 @@ export const camera = (state) =>
       h("div", { class: "camera__info-area" }, [filmLab(state)]),
 
       h("div", { class: "camera__button-bar" }, [
-        h("button", { class: "p-button", onclick: EnterMainGallery }, text(translator.gallery())),
-        h("button", { class: "p-button", onclick: EnterShop }, text(translator.shop())),
-        h("button", { class: "p-button", onclick: ResetDb }, text("RESET")),
+        h("button", { class: "p-button", onclick: EnterMainGallery }, [text(translator.gallery())]),
+        h("button", { class: "p-button", onclick: EnterShop }, [text(translator.shop())]),
+        h("button", { class: "p-button", onclick: ResetDb }, [text("RESET")]),
       ]),
     ]),
   ]);
 
-export const filmIndicator = ({ activeFilm }) =>
+export const filmIndicator = ({ activeFilm }): VNode<any> =>
   h("div", { class: "film-state" }, [
     ...Array.from({ length: activeFilm.photos.length }, () =>
       h("div", { class: "photo-in-film-used" })
@@ -80,7 +81,7 @@ export const filmIndicator = ({ activeFilm }) =>
     ),
   ]);
 
-export const filmLab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }) =>
+export const filmLab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }): VNode<State> =>
   h("div", { style: { marginTop: "1rem" } }, [
     text(translator.nrOfFilmsInLab(filmsInDevelopment.length)),
     h(
@@ -90,7 +91,7 @@ export const filmLab = ({ filmsInDevelopment, zeroDevelopmentTime, currentTime }
     ),
   ]);
 
-export const filmLabItem = (film, zeroDevelopmentTime, currentTime) => {
+export const filmLabItem = (film, zeroDevelopmentTime, currentTime): VNode<State> => {
   const timeInDevelopment = currentTime - film.developmentStartDate;
   const timeLeft = DEVELOPMENT_TIME - timeInDevelopment;
   let isDone = timeLeft <= 0;
@@ -107,13 +108,13 @@ export const filmLabItem = (film, zeroDevelopmentTime, currentTime) => {
             onclick: [DevelopedFilmWasCollected, film.id],
             class: "p-button",
           },
-          text(translator.readyForPickup())
+          [text(translator.readyForPickup())]
         )
       : text(translator.filmReadyIn(timeLeft)),
   ]);
 };
 
-export const galleryImagesList = ({ galleryImages }) =>
+export const galleryImagesList = ({ galleryImages }): VNode<State> =>
   h(
     "div",
     { class: "p-card", style: { marginBottom: "1rem" } },
@@ -126,23 +127,23 @@ export const galleryImagesList = ({ galleryImages }) =>
     )
   );
 
-export const gallery = ({ galleryImages, galleryDownloadInProgress }) =>
+export const gallery = ({ galleryImages, galleryDownloadInProgress }): VNode<State> =>
   h("div", { class: "gallery" }, [
     h("div", { class: "p-card flex-row", style: { alignItems: "center", marginBottom: "1rem" } }, [
-      h("h3", { style: { flex: 1 } }, text(translator.gallery())),
+      h("h3", { style: { flex: "1" } }, [text(translator.gallery())]),
       h("button", { class: "p-button", onclick: StartDownloadGallery }, [
         text(translator.downloadAll()),
         galleryDownloadInProgress && h("div", { class: "p-spinner" }),
       ]),
-      h("button", { class: "p-button", onclick: ExitGallery }, text(translator.back())),
+      h("button", { class: "p-button", onclick: ExitGallery }, [text(translator.back())]),
     ]),
     galleryImagesList({ galleryImages }),
   ]);
 
-export const shop = (state) =>
+export const shop = (state: State): VNode<State> =>
   h("div", { class: "shop flex-column" }, [
-    h("h1", {}, text(translator.shop())),
-    h("div", { style: { flex: 1 } }, [
+    h("h1", {}, [text(translator.shop())]),
+    h("div", { style: { flex: "1" } }, [
       h("label", { style: { display: "flex" } }, [
         text(translator.instantDevelopmentMode()),
         h("input", {
@@ -153,12 +154,12 @@ export const shop = (state) =>
         }),
       ]),
       debugView(state),
-      h("button", { onclick: AskForVideoPermission, class: "p-button" }, text("popuptest")),
+      h("button", { onclick: AskForVideoPermission, class: "p-button" }, [text("popuptest")]),
     ]),
-    h("button", { onclick: ExitShop, class: "p-button" }, text(translator.back())),
+    h("button", { onclick: ExitShop, class: "p-button" }, [text(translator.back())]),
   ]);
 
-export const debugView = ({ filmsInDevelopment, activeFilm }) =>
+export const debugView = ({ filmsInDevelopment, activeFilm }): VNode<State> =>
   h(
     "details",
     {
@@ -173,21 +174,21 @@ export const debugView = ({ filmsInDevelopment, activeFilm }) =>
             fontWeight: "bold",
           },
         },
-        text("Debug")
+        [text("Debug")]
       ),
-      h("pre", {}, text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))),
+      h("pre", {}, [text(JSON.stringify({ filmsInDevelopment, activeFilm }, null, 2))]),
     ]
   );
 
-export const videoPermissionPopup = (showVideoPermissionPopup) =>
+export const videoPermissionPopup = (showVideoPermissionPopup): VNode<State> =>
   h(
     "div",
     {
       class: "flex-column",
       style: {
         position: "absolute",
-        top: 0,
-        left: 0,
+        top: "0",
+        left: "0",
         width: "100vw",
         height: "calc(var(--vh, 1vh) * 100)",
         alignItems: "center",
@@ -204,22 +205,22 @@ export const videoPermissionPopup = (showVideoPermissionPopup) =>
           class: "p-card flex-column",
           style: {
             padding: "2rem",
-            marginTop: showVideoPermissionPopup ? 0 : "-200vh",
+            marginTop: showVideoPermissionPopup ? "0" : "-200vh",
             transform: "scale(" + (showVideoPermissionPopup ? "1" : "0.3") + ")",
             "--movingTime": "0.3s",
             "--transformingTime": "0.1s",
             transition: showVideoPermissionPopup
               ? "margin var(--movingTime) 0s, transform var(--transformingTime) var(--movingTime)"
               : "margin var(--movingTime) var(--transformingTime), transform var(--transformingTime) 0s",
-          },
+          } as StyleProp,
         },
         [
-          h("p", { style: { paddingBottom: "2rem" } }, text(translator.pleaseAllowVideoPlayback())),
-          h(
-            "button",
-            { class: "p-button primary", onclick: GotVideoPermission },
-            text(translator.allow())
-          ),
+          h("p", { style: { paddingBottom: "2rem" } }, [
+            text(translator.pleaseAllowVideoPlayback()),
+          ]),
+          h("button", { class: "p-button primary", onclick: GotVideoPermission }, [
+            text(translator.allow()),
+          ]),
         ]
       ),
     ]

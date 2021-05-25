@@ -79,15 +79,19 @@ export function PhotoCamera() {
   };
 }
 
-export function fetchArrayBuffer(url) {
+export function fetchArrayBuffer(url: string): Promise<ArrayBuffer> {
   return fetch(url).then((response) => response.arrayBuffer());
 }
 
-export function fetchAudio(url, ctx) {
+export function fetchAudio(url: string, ctx: AudioContext) {
   return fetchArrayBuffer(url).then((buffer) => ctx.decodeAudioData(buffer));
 }
 
 export class AudioPlayer {
+  disabled: boolean;
+  audioContext: AudioContext;
+  cache: Map<string, any>;
+
   constructor() {
     this.disabled = !("AudioContext" in window);
     if (!this.disabled) {
@@ -123,10 +127,8 @@ export class AudioPlayer {
     }
   }
 
-  getAudioBufferSourceNode(url) {
-    if (this.disabled) {
-      return new Error("AudioContext not supported");
-    }
+  private getAudioBufferSourceNode(url) {
+
     const source = this.audioContext.createBufferSource();
     source.buffer = this.get(url);
     source.connect(this.audioContext.destination);

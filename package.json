@@ -6,15 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write *.js js/*.js",
-    "lint": "eslint *.js js/*.js",
-    "check": "npm run format && npm run lint",
-    "dist-main-js": "rollup js/main.js --format iife | terser --compress --mangle -o dist/js/main.js"
+    "lint": "eslint sw.js js/*.js",
+    "check": "tsc && npm run format && npm run lint",
+    "dist-main-js": "rm -rf build && spack && mkdir -p dist/ && cp -r build dist/"
   },
   "author": "",
   "devDependencies": {
+    "@swc/cli": "^0.1.42",
+    "@swc/core": "^1.2.58",
     "eslint": "^7.26.0",
     "prettier": "^2.3.0",
     "rollup": "^2.48.0",
-    "terser": "^5.7.0"
+    "terser": "^5.7.0",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "hyperapp": "^2.0.18"
   }
 }

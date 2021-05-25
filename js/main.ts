@@ -1,25 +1,34 @@
-import { initdb, db } from "./persistence.js";
-import { app } from "./vendor/hyperapp-2.0.18.js";
-import { rootComponent } from "./components.js";
-import { UpdateTime } from "./actions.js";
-import { CAMERA_PATH, CLICK_SOUND_FILE } from "./constants.js";
-import { globalAudioPlayer } from "./media.js";
-import { executeManualDOMTasks } from "./dom.js";
+import { initdb, db } from "./persistence";
+import { app, Subscription } from "hyperapp";
+import { rootComponent } from "./components";
+import { UpdateTime } from "./actions";
+import { CAMERA_PATH, CLICK_SOUND_FILE } from "./constants";
+import { globalAudioPlayer } from "./media";
+import { executeManualDOMTasks } from "./dom";
+import { State } from "./types";
 
 executeManualDOMTasks();
 
-const intervalSubscriber = (dispatch, { time, action }) => {
+type IntervalPayload = {
+  time: number;
+  action: any;
+};
+
+const intervalSubscriber = (dispatch, { time, action }: IntervalPayload) => {
   let handle = setInterval(() => {
     dispatch(action);
   }, time);
   return () => clearInterval(handle);
 };
 
-const onInterval = (time, action) => [intervalSubscriber, { time, action }];
+const onInterval = (time, action): Subscription<State, IntervalPayload> => [
+  intervalSubscriber,
+  { time, action },
+];
 
 async function initApp() {
   await initdb();
-  window.pdb = db; //TODO: remove
+  // window.pdb = db; //TODO: remove
 
   const [initialActiveFilm, initialFilmsInDevelopment] = await Promise.all([
     db.loadActiveFilm(),
@@ -27,7 +36,7 @@ async function initApp() {
     globalAudioPlayer.load(CLICK_SOUND_FILE),
   ]);
 
-  app({
+  app<State>({
     init: {
       activeFilm: initialActiveFilm,
       filmsInDevelopment: initialFilmsInDevelopment,
@@ -43,7 +52,7 @@ async function initApp() {
       return rootComponent(state);
     },
     node: document.getElementById("container"),
-    subscriptions: (state) => [state.path === CAMERA_PATH && onInterval(10000, UpdateTime)],
+    subscriptions: (state) => (state.path === CAMERA_PATH ? [onInterval(10000, UpdateTime)] : []),
   });
 }
 

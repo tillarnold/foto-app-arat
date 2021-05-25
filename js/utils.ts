@@ -86,6 +86,6 @@ export async function shareDownload(photos) {
   }
 
   const files = await Promise.all(photos.map(photoToFile));
-  const shareData = { files };
+  const shareData = { files } as ShareData;
   return await navigator.share(shareData);
 }
