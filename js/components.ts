@@ -12,10 +12,9 @@ import {
   GotVideoPermission,
   AskForVideoPermission,
   StartDownloadGallery,
-} from "./actions.js";
-import * as translator from "./translator.js";
-import { GALLERY_PATH, SHOP_PATH } from "./constants.js";
-import { State } from "./types.js";
+} from "./actions";
+import * as translator from "./translator";
+import { Path, State } from "./types";
 
 const SECONDS = 1000;
 const MINUTES = 60 * SECONDS;
@@ -30,8 +29,8 @@ export const rootComponent = (state: State): VNode<State> =>
       {
         class: "camera-and-shop",
         style: {
-          marginTop: state.path === GALLERY_PATH ? "calc(var(--vh, 1vh) * -100)" : "0",
-          marginLeft: state.path === SHOP_PATH ? "-100vw" : "0",
+          marginTop: state.path === Path.Gallery ? "calc(var(--vh, 1vh) * -100)" : "0",
+          marginLeft: state.path === Path.Shop ? "-100vw" : "0",
           position: "relative",
         },
       },

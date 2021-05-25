@@ -1,16 +1,18 @@
 import { globalAudioPlayer } from "./media.js";
-import { db } from "./persistence.js";
+import { db, Film, Photo } from "./persistence.js";
 import { download, photoFileName, shareDownload } from "./utils.js";
 import * as translator from "./translator.js";
-import { CAMERA_PATH, GALLERY_PATH, SHOP_PATH, CLICK_SOUND_FILE } from "./constants.js";
+import { CLICK_SOUND_FILE } from "./constants.js";
 import { camera, closeAndOpenShutter } from "./dom.js";
+import { Path, State } from "./types.js";
+import { Dispatchable } from "hyperapp";
 
-export const AskForVideoPermission = (state) => ({
+export const AskForVideoPermission = (state: State): Dispatchable<State> => ({
   ...state,
   showVideoPermissionPopup: true,
 });
 
-export const GotVideoPermission = (state) => [
+export const GotVideoPermission = (state: State): Dispatchable<State> => [
   { ...state, showVideoPermissionPopup: false },
   [
     () => {
@@ -19,7 +21,7 @@ export const GotVideoPermission = (state) => [
   ],
 ];
 
-export const TakePhoto = (state) => [
+export const TakePhoto = (state: State): Dispatchable<State> => [
   state,
   [
     (dispatch) => {
@@ -38,7 +40,7 @@ export const TakePhoto = (state) => [
   ],
 ];
 
-export const DownloadPhoto = (state, photo) => [
+export const DownloadPhoto = (state: State, photo: Photo): Dispatchable<State> => [
   state,
   [
     () => {
@@ -49,14 +51,17 @@ export const DownloadPhoto = (state, photo) => [
   ],
 ];
 
-export const FilmsInDevelopmentChanged = (state, filmsInDevelopment) => {
+export const FilmsInDevelopmentChanged = (
+  state: State,
+  filmsInDevelopment: Film[]
+): Dispatchable<State> => {
   return {
     ...state,
     filmsInDevelopment,
   };
 };
 
-export const ResetDb = (state) => [
+export const ResetDb = (state: State): Dispatchable<State> => [
   state,
   [
     () => {
@@ -68,22 +73,22 @@ export const ResetDb = (state) => [
   ],
 ];
 
-export const NewFilmWasInserted = (state, newFilm) => ({
+export const NewFilmWasInserted = (state: State, newFilm: Film): Dispatchable<State> => ({
   ...state,
   activeFilm: newFilm,
 });
 
-export const UpdateTime = (state) => ({
+export const UpdateTime = (state: State): Dispatchable<State> => ({
   ...state,
   currentTime: Date.now(),
 });
 
-export const ChangeZeroDevelopmentMode = (state, event) => ({
+export const ChangeZeroDevelopmentMode = (state: State, event: any): Dispatchable<State> => ({
   ...state,
   zeroDevelopmentTime: event.target.checked,
 });
 
-export const NewPhotoTaken = (state, film) => [
+export const NewPhotoTaken = (state: State, film: Film): Dispatchable<State> => [
   {
     ...state,
     activeFilm: film,
@@ -104,7 +109,7 @@ export const NewPhotoTaken = (state, film) => [
   ],
 ];
 
-export const DevelopedFilmWasCollected = (state, filmId) => [
+export const DevelopedFilmWasCollected = (state: State, filmId: number): Dispatchable<State> => [
   {
     ...state,
   },
@@ -114,7 +119,7 @@ export const DevelopedFilmWasCollected = (state, filmId) => [
         db.loadAllFilmsInDevelopment().then((films) => {
           dispatch(FilmsInDevelopmentChanged, films);
         });
-        Promise.all(developedFilm.photos.map(db.loadPhoto)).then((photos) =>
+        Promise.all(developedFilm.photos.map((photoId) => db.loadPhoto(photoId))).then((photos) =>
           dispatch(EnterGallery, photos)
         );
       });
@@ -122,34 +127,34 @@ export const DevelopedFilmWasCollected = (state, filmId) => [
   ],
 ];
 
-export const EnterGallery = (state, galleryImages) => ({
+export const EnterGallery = (state: State, galleryImages: Photo[]): Dispatchable<State> => ({
   ...state,
-  path: GALLERY_PATH,
+  path: Path.Gallery,
   galleryImages,
 });
 
-export const ExitGallery = (state) => ({
+export const ExitGallery = (state: State): Dispatchable<State> => ({
   ...state,
-  path: CAMERA_PATH,
+  path: Path.Camera,
 });
 
-export const AddPhotoToGallery = (state, { photo, index }) => {
+export const AddPhotoToGallery = (state: State, { photo, index }): Dispatchable<State> => {
   let newGalleryImages = [...state.galleryImages];
   newGalleryImages[index] = photo;
   return { ...state, galleryImages: newGalleryImages };
 };
 
-export const EnterShop = (state) => ({
+export const EnterShop = (state: State): Dispatchable<State> => ({
   ...state,
-  path: SHOP_PATH,
+  path: Path.Shop,
 });
 
-export const ExitShop = (state) => ({
+export const ExitShop = (state: State): Dispatchable<State> => ({
   ...state,
-  path: CAMERA_PATH,
+  path: Path.Camera,
 });
 
-export const EnterMainGallery = (state) => [
+export const EnterMainGallery = (state: State): Dispatchable<State> => [
   { ...state },
   [
     (dispatch) => {
@@ -163,12 +168,12 @@ export const EnterMainGallery = (state) => [
   ],
 ];
 
-export const DownloadGalleryDone = (state) => ({
+export const DownloadGalleryDone = (state: State): Dispatchable<State> => ({
   ...state,
   galleryDownloadInProgress: false,
 });
 
-export const StartDownloadGallery = (state) => [
+export const StartDownloadGallery = (state: State): Dispatchable<State> => [
   { ...state, galleryDownloadInProgress: true },
   [
     (dispatch) => {

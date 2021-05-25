@@ -103,7 +103,7 @@ export class AudioPlayer {
     }
   }
 
-  load(url) {
+  load(url: string): Promise<any> {
     if (this.disabled) {
       return Promise.resolve(new Error("AudioContext not supported"));
     }
@@ -128,7 +128,6 @@ export class AudioPlayer {
   }
 
   private getAudioBufferSourceNode(url) {
-
     const source = this.audioContext.createBufferSource();
     source.buffer = this.get(url);
     source.connect(this.audioContext.destination);

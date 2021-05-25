@@ -5,16 +5,14 @@
   "main": "-",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write *.js js/*.js",
-    "lint": "eslint sw.js js/*.js",
-    "check": "tsc && npm run format && npm run lint",
-    "dist-main-js": "rm -rf build && spack && mkdir -p dist/ && cp -r build dist/"
+    "format": "prettier --write *.js js/*.ts",
+    "check": "tsc && npm run format",
+    "dist-main-js": "rm -rf buisld && spack && mkdir -p dist/ && cp -r build dist/"
   },
   "author": "",
   "devDependencies": {
     "@swc/cli": "^0.1.42",
     "@swc/core": "^1.2.58",
-    "eslint": "^7.26.0",
     "prettier": "^2.3.0",
     "rollup": "^2.48.0",
     "terser": "^5.7.0",
