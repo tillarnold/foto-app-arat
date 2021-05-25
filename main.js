@@ -382,8 +382,6 @@ function PhotoCamera() {
     }
     /**
    * Takes a photo
-   *
-   * @returns {string} A picture as a DataUrl
    */ function snap() {
         adjustSize();
         ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
@@ -418,31 +416,27 @@ function fetchAudio(url, ctx) {
     return fetchArrayBuffer(url).then((buffer)=>ctx.decodeAudioData(buffer)
     );
 }
+delete window.AudioContext;
 class AudioPlayer {
     constructor(){
         this.disabled = !("AudioContext" in window);
         if (!this.disabled) {
             this.audioContext = new AudioContext();
             this.cache = new Map();
-            this.disabled = false;
         } else console.warn("This device does not support AudioContext. Audio playback was disabled.");
     }
-    load(url) {
-        if (this.disabled) return Promise.resolve(new Error("AudioContext not supported"));
-        return fetchAudio(url, this.audioContext).then((result)=>{
-            this.cache.set(url, result);
-            return result;
-        });
+    async load(url) {
+        if (this.disabled) return new Error("AudioContext not supported");
+        const result = await fetchAudio(url, this.audioContext);
+        this.cache.set(url, result);
+        return result;
     }
     /// Returns the audio buffer at that url or an empty buffer if it is not loaded yet
     get(url) {
-        if (this.disabled) return Promise.resolve(new Error("AudioContext not supported"));
         if (this.cache.has(url)) return this.cache.get(url);
-        else {
-            this.load(url);
-            console.warn("[AudioPlayer] tried to play non-loaded sound");
-            return this.audioContext.createBuffer(2, 22050, 44100);
-        }
+        this.load(url);
+        console.warn("[AudioPlayer] tried to play non-loaded sound");
+        return this.audioContext.createBuffer(2, 22050, 44100);
     }
     getAudioBufferSourceNode(url) {
         const source = this.audioContext.createBufferSource();
@@ -478,10 +472,7 @@ function toBinary(string) {
     for(let i = 0; i < codeUnits.length; i++)codeUnits[i] = string.charCodeAt(i);
     return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
 }
-/**
- *
- * @param {ArrayBuffer} arrayBuffer
- */ function arrayBufferToBase64(arrayBuffer) {
+function arrayBufferToBase64(arrayBuffer) {
     const decoder = new TextDecoder("utf8");
     const decoded = decoder.decode(arrayBuffer);
     const binaryString = toBinary(decoded);
@@ -1246,7 +1237,6 @@ const onInterval = (time, action)=>[
 ;
 async function initApp() {
     await initdb();
-    // window.pdb = db; //TODO: remove
     const [initialActiveFilm, initialFilmsInDevelopment] = await Promise.all([
         db.loadActiveFilm(),
         db.loadAllFilmsInDevelopment(),
@@ -1268,9 +1258,9 @@ async function initApp() {
             return rootComponent(state);
         },
         node: document.getElementById("container"),
-        subscriptions: (state)=>state.path === Path.Camera ? [
-                onInterval(10000, UpdateTime)
-            ] : []
+        subscriptions: (state)=>[
+                state.path === Path.Camera && onInterval(10000, UpdateTime)
+            ]
     });
 }
 initApp();
