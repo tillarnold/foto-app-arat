@@ -4,5 +4,5 @@
     "target": "es2018",
     "moduleResolution": "node"
   },
-  "include": ["./js/**/*"]
+  "include": ["./src/**/*"]
 }

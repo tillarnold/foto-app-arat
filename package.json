@@ -5,9 +5,9 @@
   "main": "-",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write *.js js/*.ts",
+    "format": "prettier --write dist/*.js src/*.ts",
     "check": "tsc && npm run format",
-    "dist-main-js": "rm -rf buisld && spack && mkdir -p dist/ && cp -r build dist/"
+    "dist": "spack"
   },
   "author": "",
   "devDependencies": {
