@@ -416,7 +416,6 @@ function fetchAudio(url, ctx) {
     return fetchArrayBuffer(url).then((buffer)=>ctx.decodeAudioData(buffer)
     );
 }
-delete window.AudioContext;
 class AudioPlayer {
     constructor(){
         this.disabled = !("AudioContext" in window);
