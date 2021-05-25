@@ -85,8 +85,6 @@ export function fetchAudio(url: string, ctx: AudioContext) {
   return fetchArrayBuffer(url).then((buffer) => ctx.decodeAudioData(buffer));
 }
 
-delete window.AudioContext;
-
 export class AudioPlayer {
   readonly disabled: boolean;
   private audioContext: AudioContext;
