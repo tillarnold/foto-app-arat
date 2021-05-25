@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "noEmit": true,
-    "target": "es2018",
-    "moduleResolution": "node"
-  },
-  "include": ["./src/**/*"]
-}
